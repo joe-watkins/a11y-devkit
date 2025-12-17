@@ -7,9 +7,30 @@ description: Library of accessibility personas representing people with various 
 
 Library of accessibility personas for understanding diverse user needs.
 
-## Persona Library
+## Auto-Initialize Submodule
 
-All personas are in the `data/` folder. Each contains:
+**Before reading any persona files**, check if the `repo/` folder exists in this skill directory. If it doesn't exist or is empty, run the setup script:
+
+```bash
+cd .cursor/skills/a11y-personas && ./setup.sh
+```
+
+This clones the a11y-personas repository as a git submodule. Only needs to run once.
+
+## Manual Setup (for reference)
+
+```bash
+# Initialize submodule
+cd .cursor/skills/a11y-personas
+git submodule add https://github.com/joe-watkins/a11y-personas.git repo
+
+# Update to latest
+git submodule update --remote repo
+```
+
+## Data Source
+
+All personas are in `repo/data/personas/` as markdown files. Each contains:
 - **id**: Unique identifier
 - **title**: Descriptive name
 - **profile**: Key characteristics
@@ -20,7 +41,7 @@ All personas are in the `data/` folder. Each contains:
 
 ## Finding Personas
 
-Search the `data/` folder for relevant personas by category:
+Search `repo/data/personas/` for relevant personas by category:
 
 ### Vision
 | File | Persona |
@@ -108,7 +129,7 @@ Search the `data/` folder for relevant personas by category:
 ## Usage
 
 ### Get a specific persona
-Read the relevant file from `data/` to understand:
+Read the relevant file from `repo/data/personas/` to understand:
 - How the person interacts with technology
 - What barriers they face
 - What accessibility features they need
