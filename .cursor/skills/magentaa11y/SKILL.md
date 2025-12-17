@@ -7,12 +7,41 @@ description: MagentaA11y accessibility acceptance criteria reference. Use this s
 
 Single source of truth for accessibility acceptance criteria across Web and Native platforms.
 
+## Setup
+
+This skill uses the [MagentaA11y](https://github.com/tmobile/magentaA11y) project as a git submodule.
+
+### Initialize the Submodule
+
+```bash
+cd .cursor/skills/magentaa11y
+./setup.sh
+```
+
+Or manually:
+
+```bash
+cd .cursor/skills/magentaa11y
+git submodule add https://github.com/tmobile/magentaA11y.git repo
+```
+
+### Update the Submodule
+
+To pull the latest MagentaA11y content:
+
+```bash
+cd .cursor/skills/magentaa11y
+git submodule update --remote repo
+```
+
+> **Note:** No build step is required. The skill reads the raw markdown source files directly.
+
 ## Data Source
 
-Component data is organized in the `data/` folder as markdown files:
+Component documentation is located in the submodule at:
 
 ```
-data/
+repo/public/content/documentation/
 ├── how-to-test/type/       # Testing guidance by issue type
 ├── native/                  # Native (iOS/Android) components
 │   ├── controls/           # button, checkbox, toggle-switch, etc.
@@ -41,25 +70,25 @@ When a user asks for component accessibility criteria:
 
 | Query Type | File Path Pattern |
 |------------|-------------------|
-| Web component | `data/web/component/{component}.md` |
-| Web page-level | `data/web/page-level/{component}.md` |
-| Native control | `data/native/controls/{component}.md` |
-| Native notification | `data/native/notifications/{component}.md` |
-| Native pattern | `data/native/patterns/{component}.md` |
-| How to test | `data/how-to-test/type/{topic}.md` |
+| Web component | `repo/public/content/documentation/web/component/{component}.md` |
+| Web page-level | `repo/public/content/documentation/web/page-level/{component}.md` |
+| Native control | `repo/public/content/documentation/native/controls/{component}.md` |
+| Native notification | `repo/public/content/documentation/native/notifications/{component}.md` |
+| Native pattern | `repo/public/content/documentation/native/patterns/{component}.md` |
+| How to test | `repo/public/content/documentation/how-to-test/type/{topic}.md` |
 
 ### Example Queries
 
 | User Query | File Path |
 |------------|-----------|
-| "Button AC for Native" | `data/native/controls/button.md` |
-| "Web checkbox criteria" | `data/web/component/checkbox.md` |
-| "How to test a modal dialog" | `data/web/component/modal-dialog.md` |
-| "Native toggle switch" | `data/native/controls/toggle-switch.md` |
-| "Web link accessibility" | `data/web/component/link.md` |
-| "Skip link criteria" | `data/web/page-level/skip-link.md` |
-| "Native alert dialog" | `data/native/notifications/alert-dialog.md` |
-| "How to test color contrast" | `data/how-to-test/type/color-contrast.md` |
+| "Button AC for Native" | `repo/public/content/documentation/native/controls/button.md` |
+| "Web checkbox criteria" | `repo/public/content/documentation/web/component/checkbox.md` |
+| "How to test a modal dialog" | `repo/public/content/documentation/web/component/modal-dialog.md` |
+| "Native toggle switch" | `repo/public/content/documentation/native/controls/toggle-switch.md` |
+| "Web link accessibility" | `repo/public/content/documentation/web/component/link.md` |
+| "Skip link criteria" | `repo/public/content/documentation/web/page-level/skip-link.md` |
+| "Native alert dialog" | `repo/public/content/documentation/native/notifications/alert-dialog.md` |
+| "How to test color contrast" | `repo/public/content/documentation/how-to-test/type/color-contrast.md` |
 
 ## Available Components
 
@@ -79,4 +108,4 @@ alert-dialog, modal, snackbar-toast
 animation, field-errors, focus, graphics-visual-elements, headings, image-decorative, loading-icon, loading-spinner, strike-through, table, tidbit, webview
 
 ### How to Test
-color-contrast, forms-&-inputs, images, keyboard-&-focus, links-&-buttons, not-sure-if-it-is-an-issue
+color-contrast, forms-&-inputs, images, keyboard-&-focus, links-&-buttons, native-apps, not-sure-if-it-is-an-issue, web-screen-readers
