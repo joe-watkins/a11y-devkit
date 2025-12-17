@@ -1,3 +1,6 @@
 [submodule ".cursor/skills/magentaa11y/repo"]
 	path = .cursor/skills/magentaa11y/repo
 	url = https://github.com/tmobile/magentaA11y.git
+[submodule ".cursor/skills/wcag-expert/repo"]
+	path = .cursor/skills/wcag-expert/repo
+	url = https://github.com/w3c/wcag.git

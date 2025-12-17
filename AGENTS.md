@@ -22,4 +22,3 @@ Skills are located in `.cursor/skills/`. Each skill contains a `SKILL.md` with d
 - `assets/` - Templates and assets
 
 To use a skill, reference its `SKILL.md` for guidance on when and how to apply it.
-
