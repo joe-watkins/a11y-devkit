@@ -7,30 +7,24 @@ description: MagentaA11y accessibility acceptance criteria reference. Use this s
 
 Single source of truth for accessibility acceptance criteria across Web and Native platforms.
 
-## Setup
+## Auto-Initialize Submodule
 
-This skill uses the [MagentaA11y](https://github.com/tmobile/magentaA11y) project as a git submodule.
-
-### Initialize the Submodule
+**Before reading any component files**, check if the `repo/` folder exists in this skill directory. If it doesn't exist or is empty, run the setup script:
 
 ```bash
-cd .cursor/skills/magentaa11y
-./setup.sh
+cd .cursor/skills/magentaa11y && ./setup.sh
 ```
 
-Or manually:
+This clones the MagentaA11y repository as a git submodule. Only needs to run once.
+
+## Manual Setup (for reference)
 
 ```bash
+# Initialize submodule
 cd .cursor/skills/magentaa11y
 git submodule add https://github.com/tmobile/magentaA11y.git repo
-```
 
-### Update the Submodule
-
-To pull the latest MagentaA11y content:
-
-```bash
-cd .cursor/skills/magentaa11y
+# Update to latest
 git submodule update --remote repo
 ```
 

@@ -4,24 +4,23 @@ Accessibility acceptance criteria reference powered by [MagentaA11y](https://www
 
 ## Setup
 
-This skill uses the MagentaA11y project as a git submodule. After adding this skill to your project, initialize the submodule:
+This skill uses the MagentaA11y project as a git submodule. 
+
+**The skill will automatically initialize the submodule** if it detects the `repo/` folder is missing when you first use it.
+
+### Manual Setup (optional)
+
+If you prefer to set up manually:
 
 ```bash
-# From your project root
-git submodule update --init --recursive
-
-# Or run the setup script
 cd .cursor/skills/magentaa11y
 ./setup.sh
 ```
 
-### First Time Setup (if submodule not yet added)
-
-If you're setting up from scratch:
+Or from your project root:
 
 ```bash
-cd .cursor/skills/magentaa11y
-git submodule add https://github.com/tmobile/magentaA11y.git repo
+git submodule update --init --recursive
 ```
 
 ### Updating Content
@@ -68,4 +67,3 @@ magentaa11y/
 ## License
 
 MagentaA11y is licensed under [Apache-2.0](https://github.com/tmobile/magentaA11y/blob/main/LICENSE.txt).
-
