@@ -1,0 +1,14 @@
+---
+id: dfn-single-pointer
+term: single pointer
+---
+
+# Single Pointer
+
+an input modality that only targets a single point on the page/screen at a time – such as a mouse, single finger on a touch screen, or stylus.
+
+   NoteSingle pointer interactions include clicks, double clicks, taps, dragging motions, and single-finger swipe gestures. In contrast, multipoint interactions involve the use of two or more pointers at the same time, such as two-finger interactions on a touchscreen, or the simultaneous use of a mouse and stylus.
+
+---
+
+📖 **Reference**: [WCAG 2.2 Glossary - single pointer](https://www.w3.org/TR/WCAG22/#dfn-single-pointer)
