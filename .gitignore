@@ -1,7 +1,7 @@
-
 # Cloned skill repositories
 /*/repo/
-/*/repo/
+
+# Ignore IDE files for now for testing
 .github/
 .claude/
 .cursorrules
