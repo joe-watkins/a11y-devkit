@@ -10,25 +10,43 @@ Expert resource for WAI-ARIA (Accessible Rich Internet Applications) specificati
 
 ## Auto-Initialize
 
-**Before reading any ARIA files**, check if the `repo/` folder exists in this skill directory. If it doesn't exist, run the setup script:
+**Before reading any ARIA files**, check if the `repo/aria/` and `repo/apg/` folders exist in this skill directory. If they don't exist, run the setup script:
 
 ```bash
 cd .cursor/skills/aria-expert && ./setup.sh
 ```
 
-This clones the official W3C ARIA repository. Only needs to run once.
+This clones the official W3C ARIA repository and the ARIA Authoring Practices Guide. Only needs to run once.
 
 ## Updating Content
 
 To pull the latest ARIA specifications:
 
 ```bash
-cd .cursor/skills/aria-expert/repo && git pull
+cd .cursor/skills/aria-expert/repo/aria && git pull
+cd .cursor/skills/aria-expert/repo/apg && git pull
 ```
 
 ## Data Source
 
-This skill uses the **official W3C ARIA repository** as a git submodule at `repo/`. Content is in HTML format (ReSpec specifications).
+This skill uses the **official W3C ARIA repository** and **ARIA Authoring Practices Guide (APG)** as git submodules. Content is in HTML format (ReSpec specifications).
+
+### ARIA Authoring Practices Guide (APG)
+
+| Path | Content |
+|------|---------||
+| `apg-repo/` | ARIA Authoring Practices Guide |
+| `apg-repo/content/patterns/` | Design patterns for common widgets |
+
+**Key content in APG:**
+- **5 Rules of ARIA Use** - Fundamental principles (see section below)
+- **Design Patterns** - Complete examples with code for:
+  - Accordion, Alert, Breadcrumb, Button, Carousel, Checkbox, Combobox
+  - Dialog (Modal), Disclosure, Feed, Grids, Links, Listbox, Menu, Meter
+  - Radio Group, Slider, Spinbutton, Switch, Table, Tabs, Toolbar, Tooltip, Tree View
+- **Keyboard Interaction Patterns** - Required keyboard support for each pattern
+- **Example Implementations** - Working code examples
+- **Landmark Regions** - How to use ARIA landmarks effectively
 
 ### Core ARIA Specification
 
@@ -96,9 +114,29 @@ This skill uses the **official W3C ARIA repository** as a git submodule at `repo
 
 ## How to Answer ARIA Questions
 
+### For ARIA Best Practices, Rules, or Principles
+
+**Answer directly without searching files** - The 5 Rules of ARIA Use are documented in this file above. No need to search the APG repo for these fundamental principles.
+
+### For Design Pattern Questions (e.g., "How to build a tabs widget?", "Dialog keyboard interaction")
+
+1. Read the appropriate pattern file in `repo/apg/content/patterns/`
+2. Common patterns:
+   - `accordion/` - Accordion pattern
+   - `alert/` - Alert pattern  
+   - `button/` - Button pattern
+   - `dialog-modal/` - Modal dialog
+   - `tabs/` - Tabs pattern
+   - `menu-button/` - Menu button
+   - `combobox/` - Combobox/autocomplete
+3. Each pattern includes:
+   - Keyboard interaction requirements
+   - ARIA roles, states, and properties
+   - Working code examples
+
 ### For Role Questions (e.g., "button role", "dialog role", "tablist")
 
-1. Read `repo/index.html` and search for the role name
+1. Read `repo/aria/index.html` and search for the role name
 2. The spec contains:
    - Role definition and purpose
    - Required/supported states and properties
@@ -109,7 +147,7 @@ This skill uses the **official W3C ARIA repository** as a git submodule at `repo
 
 ### For State/Property Questions (e.g., "aria-label", "aria-expanded", "aria-live")
 
-1. Read `repo/index.html` and search for the attribute name
+1. Read `repo/aria/index.html` and search for the attribute name
 2. The spec contains:
    - Property definition
    - Valid values (true/false, token list, string, etc.)
@@ -119,7 +157,7 @@ This skill uses the **official W3C ARIA repository** as a git submodule at `repo
 
 ### For Accessible Name Questions
 
-1. Read `repo/accname/index.html`
+1. Read `repo/aria/accname/index.html`
 2. Search for relevant sections:
    - Name calculation algorithm (step-by-step process)
    - Text alternative computation
@@ -128,20 +166,65 @@ This skill uses the **official W3C ARIA repository** as a git submodule at `repo
 
 ### For API Mapping Questions
 
-1. For ARIA role/property mappings: Read `repo/core-aam/index.html`
-2. For HTML element mappings: Read `repo/html-aam/index.html`
+1. For ARIA role/property mappings: Read `repo/aria/core-aam/index.html`
+2. For HTML element mappings: Read `repo/aria/html-aam/index.html`
 3. Search for the specific role or element name
 4. The spec shows platform-specific mappings (Windows, macOS, Linux, etc.)
 
 ### For Digital Publishing Questions
 
-1. Read `repo/dpub-aria/index.html`
+1. Read `repo/aria/dpub-aria/index.html`
 2. Search for roles like: doc-abstract, doc-acknowledgments, doc-bibliography, doc-chapter, etc.
 
 ### For Graphics Questions
 
-1. Read `repo/graphics-aria/index.html`
+1. Read `repo/aria/graphics-aria/index.html`
 2. Search for roles like: graphics-document, graphics-symbol, graphics-object
+
+## 5 Rules of ARIA Use
+
+**Critical principles for using ARIA correctly (from WAI-ARIA Authoring Practices):**
+
+### Rule 1: Use Native HTML Semantics When Possible
+If you can use a native HTML element or attribute with the semantics and behavior already built in, instead of re-purposing an element and adding ARIA, **then do so**.
+
+**Good:** `<button>Click me</button>`  
+**Bad:** `<div role="button" tabindex="0">Click me</div>`
+
+### Rule 2: Don't Change Native Semantics
+Do not change native semantics, unless you really have to.
+
+**Bad:** `<h1 role="button">Heading button</h1>`  
+**Why:** This creates confusion - it looks like a heading but acts like a button.
+
+### Rule 3: All Interactive ARIA Controls Must Be Keyboard Accessible
+All interactive ARIA controls must be usable with the keyboard. If you create a widget using `role="button"`, `role="tab"`, etc., it must be keyboard accessible.
+
+**Required:**
+- Tab/Shift+Tab to navigate to controls
+- Enter/Space to activate buttons and links
+- Arrow keys for composite widgets (tabs, menus, etc.)
+- Escape to close dialogs and menus
+
+### Rule 4: Don't Hide Focusable Elements
+Do not use `role="presentation"` or `aria-hidden="true"` on a focusable element.
+
+**Bad:** `<button aria-hidden="true">Click me</button>`  
+**Why:** Screen readers will skip it, but keyboard users can still focus it, creating confusion.
+
+### Rule 5: All Interactive Elements Must Have an Accessible Name
+All interactive elements must have an accessible name.
+
+**Methods to provide accessible names:**
+- Visible text content: `<button>Submit</button>`
+- `aria-label`: `<button aria-label="Close dialog">×</button>`
+- `aria-labelledby`: `<button aria-labelledby="label-id">×</button>`
+- alt text for images: `<img src="logo.png" alt="Company name">`
+
+### Bonus Principle: "No ARIA is Better Than Bad ARIA"
+Incorrect ARIA can make accessibility **worse** for screen reader users than having no ARIA at all. When in doubt, test with real assistive technologies.
+
+---
 
 ## Quick Reference
 

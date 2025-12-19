@@ -6,23 +6,44 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-REPO_URL="https://github.com/w3c/aria.git"
-REPO_DIR="repo"
+ARIA_SPEC_URL="https://github.com/w3c/aria.git"
+APG_URL="https://github.com/w3c/aria-practices.git"
 
-echo "🔧 Setting up W3C ARIA repository..."
+ARIA_DIR="repo/aria"
+APG_DIR="repo/apg"
 
-if [ -d "$REPO_DIR" ]; then
-    echo "📦 Repository exists, pulling latest..."
-    cd "$REPO_DIR"
+echo "🔧 Setting up W3C ARIA repositories..."
+
+# Create repo directory if it doesn't exist
+mkdir -p repo
+
+# Clone/update main ARIA spec
+if [ -d "$ARIA_DIR" ]; then
+    echo "📦 ARIA spec exists, pulling latest..."
+    cd "$ARIA_DIR"
     git pull origin main || git pull origin master
+    cd ../..
 else
-    echo "📥 Cloning W3C ARIA repository..."
-    git clone --depth 1 "$REPO_URL" "$REPO_DIR"
+    echo "📥 Cloning W3C ARIA specification..."
+    git clone --depth 1 "$ARIA_SPEC_URL" "$ARIA_DIR"
+fi
+
+# Clone/update APG
+if [ -d "$APG_DIR" ]; then
+    echo "📦 APG exists, pulling latest..."
+    cd "$APG_DIR"
+    git pull origin main || git pull origin master
+    cd ../..
+else
+    echo "📥 Cloning ARIA Authoring Practices Guide..."
+    git clone --depth 1 "$APG_URL" "$APG_DIR"
 fi
 
 echo "✅ ARIA Expert skill setup complete!"
 echo "📂 Content available at:"
-echo "   - Main ARIA spec: repo/index.html"
-echo "   - Accessible Name spec: repo/accname/index.html"
-echo "   - Core AAM: repo/core-aam/index.html"
-echo "   - HTML AAM: repo/html-aam/index.html"
+echo "   - Main ARIA spec: repo/aria/index.html"
+echo "   - Accessible Name spec: repo/aria/accname/index.html"
+echo "   - Core AAM: repo/aria/core-aam/index.html"
+echo "   - HTML AAM: repo/aria/html-aam/index.html"
+echo "   - APG Patterns: repo/apg/content/patterns/"
+echo "   - 5 Rules of ARIA: See SKILL.md"
