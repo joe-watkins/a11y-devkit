@@ -19,7 +19,7 @@ A collection of accessibility-centric skills for AI agents and editors.
 
 Clone this repository into your IDE's skills folder:
 
-- **GitHub Copilot**: `.github/copilot-instructions.md` references skill paths (soon to be supported .github/skills/ directory)
+- **GitHub Copilot**: `.github/copilot-instructions.md` references skill paths (soon to be supported `.github/skills/ directory`)
 - **Claude Code**: `.claude/skills/` directory
 - **Cursor**: `.cursorrules` or `.cursor/skills` directory
 
