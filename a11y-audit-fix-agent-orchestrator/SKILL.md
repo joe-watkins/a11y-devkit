@@ -5,7 +5,7 @@ description: Coordinate a full accessibility audit workflow across multiple a11y
 
 # Accessibility Orchestrator
 
-Coordinates the complete accessibility audit workflow by directing Claude to use specialized a11y skills in sequence.
+Coordinates the complete accessibility audit workflow by directing AI to use specialized a11y skills in sequence.
 
 ## CRITICAL: Autonomous Execution
 
