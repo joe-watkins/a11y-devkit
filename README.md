@@ -22,39 +22,50 @@ A collection of accessibility-centric skills for AI agents and editors.
 
 ## Setup
 
-Clone this repository into your IDE's skills folder:
+### Quick Start with Deployment Script
 
-- **GitHub Copilot**: `.github/copilot-instructions.md` references skill paths (soon to be supported `.github/skills/ directory`)
+The easiest way to use these skills with your IDE is to use the deployment script:
+
+```bash
+# Deploy to all IDEs (Claude Code, Cursor, GitHub Copilot)
+./deploy-skills.sh --all
+
+# Deploy to specific IDE
+./deploy-skills.sh --claude
+./deploy-skills.sh --cursor
+./deploy-skills.sh --github
+
+# Deploy with automatic setup (downloads external resources)
+./deploy-skills.sh --all --setup
+
+# List all available skills
+./deploy-skills.sh --list
+
+# Clean up IDE deployments
+./deploy-skills.sh --clean
+```
+
+The deployment script automatically:
+- Creates symlinks to skills in IDE-specific directories (`.claude/skills/`, `.cursor/skills/`, `.github/skills/`)
+- Keeps skills in sync with the source (changes are immediately reflected)
+- Optionally runs setup scripts to download external reference data
+
+### IDE-Specific Directories
+
+After running the deployment script, skills will be available in:
+
 - **Claude Code**: `.claude/skills/` directory
-- **Cursor**: `.cursorrules` or `.cursor/skills` directory
+- **Cursor**: `.cursor/skills` directory
+- **GitHub Copilot**: `.github/skills/` directory
+
+> The deployment script uses symlinks by default, so any changes you make to the source skills are immediately reflected in all IDE locations. Use `--copy` flag if you prefer to copy files instead.
+
+### Manual Setup (Alternative)
+
+If you prefer manual setup, clone this repository into your IDE's skills folder:
+
+- **Claude Code**: Clone/symlink into `.claude/skills/`
+- **Cursor**: Clone/symlink into `.cursor/skills/`
+- **GitHub Copilot**: Clone/symlink into `.github/skills/` (or use `.github/copilot-instructions.md`)
 
 Each skill folder contains a `SKILL.md` file with instructions, reference data, and any associated scripts.
-
-### GitHub Copilot Example
-
-Add a catalog to `.github/copilot-instructions.md`:
-
-```markdown
-# Skills Catalog
-
-| Skill Name | Description | Path |
-|------------|-------------|------|
-| A11y Audit Fix Agent Orchestrator | Coordinate a full accessibility audit workflow across multiple a11y skills | `a11y-audit-fix-agent-orchestrator/SKILL.md` |
-| A11y Base Web | Foundational accessibility patterns and requirements for AI-generated web code | `a11y-base-web/SKILL.md` |
-| A11y Personas | Accessibility personas for diverse user needs | `a11y-personas/SKILL.md` |
-| A11y Remediator | Generate accessibility fixes for identified issues | `a11y-remediator/SKILL.md` |
-| A11y Tester | Automated WCAG testing with axe-core | `a11y-tester/SKILL.md` |
-| A11y Validator | Verify that accessibility fixes resolve identified issues | `a11y-validator/SKILL.md` |
-| ARIA Expert | WAI-ARIA roles, states, and properties reference | `aria-expert/SKILL.md` |
-| MagentaA11y | Component accessibility acceptance criteria | `magentaa11y/SKILL.md` |
-| Skill Creator | Guide for creating effective skills | `skill-creator/SKILL.md` |
-| WCAG Expert | WCAG 2.2 guidelines reference | `wcag-expert/SKILL.md` |
-| Web Standards | Static HTML/CSS/ARIA analysis without requiring a browser | `web-standards/SKILL.md` |
-
-## How to Use Skills
-
-When you encounter a task related to a skill:
-1. Read the skill file at the listed path
-2. Follow any guidance, standards, or templates provided
-3. Use any scripts referenced in the skill file
-```
