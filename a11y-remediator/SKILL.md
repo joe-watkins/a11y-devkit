@@ -1,11 +1,11 @@
 ---
 name: a11y-remediator
-description: Generate accessibility fixes for identified issues using knowledge from magentaa11y patterns, aria-expert guidance, wcag-expert success criteria, and a11y-personas user impact. Use this skill when you have a list of accessibility issues and need to produce corrected code with full context. Part of the a11y-orchestrator workflow.
+description: Generate accessibility fixes for identified issues using MCP servers for component patterns (magentaa11y-mcp), ARIA guidance (aria-mcp), WCAG criteria (wcag-mcp), and user impact (a11y-personas-mcp). Use this skill when you have a list of accessibility issues and need to produce corrected code with full context. Part of the a11y-orchestrator workflow.
 ---
 
 # Accessibility Remediator
 
-Generates fixes for accessibility issues by consulting specialized knowledge skills.
+Generates fixes for accessibility issues by querying MCP servers for authoritative guidance.
 
 ## Critical Constraint: Fix What Exists
 
@@ -28,10 +28,19 @@ If an issue requires adding new elements (like a missing `<h1>`), categorize it 
 For each accessibility issue:
 
 1. **Identify the component type** — button, link, form field, image, etc.
-2. **Get the correct pattern** — from `magentaa11y`
-3. **Get ARIA guidance** — from `aria-expert` if ARIA is needed
-4. **Map to WCAG** — from `wcag-expert` for success criterion
-5. **Document impact** — from `a11y-personas` for affected users
+2. **Get the correct pattern** — query `magentaa11y-mcp`:
+   - `get_web_component("button")` → Returns acceptance criteria
+   - `get_component_developer_notes("button")` → Returns implementation guidance
+3. **Get ARIA guidance** — query `aria-mcp` if ARIA is needed:
+   - `get-role("button")` → Returns role requirements
+   - `validate-role-attributes("button", ["aria-pressed"])` → Validates ARIA usage
+   - `get-required-attributes("button")` → Returns required attributes
+4. **Map to WCAG** — query `wcag-mcp` for success criterion:
+   - `get-criterion("4.1.2")` → Returns SC details and understanding docs
+   - `get-techniques-for-criterion("4.1.2")` → Returns implementation techniques
+5. **Document impact** — query `a11y-personas-mcp` for affected users:
+   - `get-personas(["blindness-screen-reader-nvda"])` → Returns persona details
+   - `list-personas()` → Returns all 69 personas for reference
 
 ## Fix Strategies by Issue Type
 
@@ -39,7 +48,7 @@ For each accessibility issue:
 
 **Pattern:** Element has no accessible name for assistive technology
 
-**Consult magentaa11y:** Find component (button, link, input) for naming pattern
+**Query magentaa11y-mcp:** `get_web_component("button")` for naming pattern
 
 **Fix approaches:**
 ```html
@@ -54,13 +63,13 @@ For each accessibility issue:
 <input id="email" type="email">
 ```
 
-**WCAG:** 4.1.2 Name, Role, Value (consult wcag-expert)
+**WCAG:** 4.1.2 Name, Role, Value — query `wcag-mcp`: `get-criterion("4.1.2")`
 
 ### Fake Interactive Elements
 
 **Pattern:** Non-semantic elements used for interaction
 
-**Consult magentaa11y:** Button or Link component for correct semantics
+**Query magentaa11y-mcp:** `get_web_component("button")` or `get_web_component("link")` for correct semantics
 
 **Fix approaches:**
 ```html
@@ -83,7 +92,7 @@ For each accessibility issue:
 
 **Pattern:** Form inputs without programmatic labels
 
-**Consult magentaa11y:** Text input, Select, Checkbox components
+**Query magentaa11y-mcp:** `get_web_component("text-input")`, `get_web_component("select")`, `get_web_component("checkbox")`
 
 **Fix approaches:**
 ```html
@@ -107,7 +116,7 @@ For each accessibility issue:
 
 **Pattern:** ARIA used incorrectly or redundantly
 
-**Consult aria-expert:** For correct role/state/property combinations
+**Query aria-mcp:** `validate-role-attributes(role, states)` for correct combinations
 
 **Fix approaches:**
 ```html
@@ -137,7 +146,7 @@ For each accessibility issue:
 
 **Pattern:** Skipped levels or non-semantic headings
 
-**Consult wcag-expert:** SC 1.3.1 for heading requirements
+**Query wcag-mcp:** `get-criterion("1.3.1")` for heading requirements
 
 **Fix approaches:**
 ```html
@@ -161,7 +170,7 @@ For each accessibility issue:
 
 **Pattern:** Page lacks proper landmark structure
 
-**Consult aria-expert:** Landmark roles and regions
+**Query aria-mcp:** `list-landmarks()` for landmark roles and regions
 
 **Fix approaches:**
 ```html
@@ -184,7 +193,7 @@ For each accessibility issue:
 
 **Pattern:** Images missing or with incorrect alt text
 
-**Consult magentaa11y:** Informative or Decorative image component
+**Query magentaa11y-mcp:** `get_web_component("image")` for informative vs decorative patterns
 
 **Fix approaches:**
 ```html
@@ -206,7 +215,7 @@ For each accessibility issue:
 
 **Pattern:** Focus indicator removed or insufficient
 
-**Consult wcag-expert:** SC 2.4.7 Focus Visible
+**Query wcag-mcp:** `get-criterion("2.4.7")` for Focus Visible requirements
 
 **Fix approaches:**
 ```css
@@ -229,7 +238,11 @@ button:focus-visible {
 
 ## Documenting User Impact
 
-**Consult a11y-personas** to identify affected users. Include:
+**Query a11y-personas-mcp** to identify affected users:
+- `list-personas()` → Returns all 69 personas
+- `get-personas(["blindness-screen-reader-nvda", "motor-impairment-voice-control"])` → Returns specific personas
+
+Include:
 
 | Issue Type | Likely Affected Personas |
 |------------|-------------------------|
@@ -253,7 +266,7 @@ For each fix:
 **WCAG:** [SC number] [SC name]
 **Severity:** [Critical/Serious/Moderate/Minor]
 **Impact:** [One sentence describing user impact]
-**Persona:** [From a11y-personas]
+**Persona:** [From a11y-personas-mcp]
 
 **Before:**
 ```html
@@ -286,6 +299,6 @@ Flag for manual review when:
 1. [Approach A with tradeoffs]
 2. [Approach B with tradeoffs]
 
-**Guidance:** See [relevant skill/resource]
-**Personas Affected:** [List from a11y-personas]
+**Guidance:** Query relevant MCP server for patterns
+**Personas Affected:** [Query a11y-personas-mcp]
 ```
