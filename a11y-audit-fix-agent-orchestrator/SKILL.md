@@ -128,30 +128,27 @@ For each issue, collaborate with specialized skills to determine the best fix, t
 
 ### Collaborative Remediation Planning
 
-Before applying any fix, consult multiple sources to build the optimal remediation strategy:
+Before applying any fix, use axe-core recommendations as the primary guidance:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                 REMEDIATION COLLABORATION                    │
+│                 REMEDIATION WORKFLOW                         │
 ├─────────────────────────────────────────────────────────────┤
 │  Issue from Stage 1                                         │
 │         │                                                   │
 │         ▼                                                   │
 │  ┌─────────────────────────────────────────────────┐       │
 │  │  axe-core recommendations (help, helpUrl,       │       │
-│  │  failureSummary) ←── Starting Point             │       │
+│  │  failureSummary) ←── Primary Guidance           │       │
 │  └──────────────────────┬──────────────────────────┘       │
 │                         │                                   │
-│         ┌───────────────┼───────────────┐                  │
-│         ▼               ▼               ▼                  │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐          │
-│  │ magentaa11y │ │ aria-expert │ │ wcag-expert │          │
-│  │  Patterns   │ │   ARIA spec │ │   Criteria  │          │
-│  └──────┬──────┘ └──────┬──────┘ └──────┬──────┘          │
-│         │               │               │                  │
-│         └───────────────┼───────────────┘                  │
 │                         ▼                                   │
-│              Compare & Build Consensus                      │
+│  ┌─────────────────────────────────────────────────┐       │
+│  │  MCP Resources (if available):                  │       │
+│  │  - WCAG guidelines & success criteria           │       │
+│  │  - ARIA roles, states, properties               │       │
+│  │  - Component accessibility patterns             │       │
+│  └──────────────────────┬──────────────────────────┘       │
 │                         │                                   │
 │         ┌───────────────┴───────────────┐                  │
 │         ▼                               ▼                  │
@@ -162,7 +159,9 @@ Before applying any fix, consult multiple sources to build the optimal remediati
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### Skill Consultation Process
+> **Note:** For detailed WCAG criteria, ARIA specifications, and component patterns, use MCP servers if available. Skills focus on actions; MCP provides resources.
+
+### Remediation Process
 
 For each issue identified in Stage 1:
 
@@ -170,37 +169,26 @@ For each issue identified in Stage 1:
    - `help`: Brief description of how to fix
    - `helpUrl`: Link to detailed Deque University documentation
    - `nodes[].failureSummary`: Specific fix instructions per element
-   - Use this as the starting point for remediation planning
+   - Use this as the primary source for remediation planning
 
 2. **Identify the component type** — What kind of element is this? (button, accordion, form field, etc.)
 
-3. **Consult `magentaa11y`** — Find the component documentation:
-   - What is the correct pattern for this component?
-   - What are the acceptance criteria?
-   - Are there code examples to follow?
-   - Does this align with axe-core's recommendation?
+3. **Query MCP resources if available** — For additional context:
+   - WCAG success criteria and techniques
+   - ARIA roles, states, and properties
+   - Component accessibility patterns and acceptance criteria
 
-4. **Consult `aria-expert`** — If ARIA is involved:
-   - What roles, states, and properties are required?
-   - What are the keyboard interaction expectations?
-   - Are there any ARIA anti-patterns to avoid?
-
-5. **Consult `wcag-expert`** — Map to success criteria:
-   - Which WCAG success criterion does this violate?
-   - What is the conformance level (A, AA, AAA)?
-   - Are there related techniques or failures?
-
-6. **Consult `a11y-personas`** — Understand user impact:
+4. **Consult `a11y-personas`** — Understand user impact:
    - Which users are affected by this issue?
    - How does it impact their experience?
    - What is the severity from a user perspective?
 
-7. **Compare all guidance** — Build consensus:
-   - axe-core recommendation + magentaa11y pattern = high confidence
-   - If skills provide different approaches, prefer patterns that satisfy all sources
+5. **Apply the fix** — Based on axe-core guidance and MCP resources:
+   - Prefer axe-core recommendations as the authoritative source
+   - Use MCP resources to validate and enhance the fix
    - Consider user impact from personas when choosing between options
 
-8. **Verify no visual impact** — Before applying:
+6. **Verify no visual impact** — Before applying:
    - Will this fix change how the page looks? If yes, flag for manual review
    - Does changing element types require CSS to preserve appearance?
    - Are we adding visible content? If yes, don't auto-fix
@@ -231,7 +219,7 @@ For each issue identified in Stage 1:
 
 ### Fix Output Format
 
-For each fixable issue, document the collaborative decision:
+For each fixable issue, document:
 
 ```markdown
 ### Issue #N: [Brief description]
@@ -242,13 +230,8 @@ For each fixable issue, document the collaborative decision:
 - Deque Docs: [helpUrl]
 - Fix suggestion: [failureSummary]
 
-**Skill Consultation:**
-- magentaa11y: [Pattern recommendation]
-- aria-expert: [ARIA guidance]
-- wcag-expert: [Success criterion]
-- Personas affected: [List]
-
-**Remediation Decision:** [Why this fix was chosen, how sources aligned]
+**WCAG:** [Success criterion if known]
+**Personas affected:** [List from a11y-personas]
 
 **Before:**
 ```html
@@ -262,21 +245,18 @@ For each fixable issue, document the collaborative decision:
 ```
 
 For complex issues requiring manual review, document:
-- What each skill recommended
-- Why consensus couldn't be reached or why auto-fix isn't appropriate
+- Why auto-fix isn't appropriate
 - Recommended approach for developer
 
 **Progress output:**
 ```
 🔧 Stage 2: Applying fixes
    ├─ Issue #1: [description]
-   │   ├─ Consulting magentaa11y... [pattern found]
-   │   ├─ Consulting aria-expert... [ARIA guidance]
-   │   ├─ Consulting wcag-expert... [SC X.X.X]
+   │   ├─ axe-core recommends: [fix suggestion]
    │   ├─ Checking personas... [X users affected]
    │   └─ ✓ Fix applied
    ├─ Issue #2: [description]
-   │   └─ ... 
+   │   └─ ...
    └─ ✓ Applied X fixes (Y need manual review)
 ```
 
@@ -291,7 +271,7 @@ Verify that applied fixes resolve the issues.
 ### Validation Process
 
 1. **Re-run tests** - Use `a11y-tester` skill to re-test the modified code (navigate and run axe-core again)
-2. **Check acceptance criteria** - Use `magentaa11y` skill to verify patterns match acceptance criteria
+2. **Verify fixes resolved issues** - Compare before/after axe-core results
 3. **Categorize results:**
    - ✅ Fixed - Issue no longer detected
    - ⚠️ Needs Manual Review - Cannot be automatically verified
@@ -377,12 +357,6 @@ These issues were identified by static code analysis but NOT confirmed by automa
 | Incomplete (manual review) | X |
 | Static-only (not auto-fixed) | X |
 ```
-|--------|--------|
-| Issues re-tested | X |
-| Confirmed fixed | X |
-| Still failing | X |
-| Needs manual review | X |
-```
 
 ## Handling Different Input Types
 
@@ -404,8 +378,19 @@ Identify framework (React, Vue, etc.) and adapt patterns accordingly.
 |------|-------|-----------------|
 | Static code analysis | `web-standards` | HTML/ARIA/semantic issues |
 | Runtime testing | `a11y-tester` | axe-core violations |
-| Correct patterns | `magentaa11y` | Component implementations |
-| ARIA guidance | `aria-expert` | Roles, states, properties |
-| WCAG mapping | `wcag-expert` | Success criteria details |
+| Generate fixes | `a11y-remediator` | Applies accessibility fixes |
+| Verify fixes | `a11y-validator` | Confirms issues resolved |
 | User impact | `a11y-personas` | Who is affected and how |
 | Base patterns | `a11y-base-web` | Foundational requirements |
+
+## MCP Resources (External)
+
+For detailed reference data, use MCP servers if available:
+
+| Resource Type | MCP Server | Provides |
+|---------------|------------|----------|
+| WCAG guidelines | wcag-expert | Success criteria, techniques, failures |
+| ARIA specifications | aria-expert | Roles, states, properties, patterns |
+| Component patterns | magentaa11y | Acceptance criteria, code examples |
+
+> Skills are "doers" — they perform actions. MCP servers are "resources" — they provide reference data.
