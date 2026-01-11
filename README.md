@@ -27,6 +27,65 @@ For detailed reference data, query these MCP servers:
 
 > **Philosophy:** Skills are "doers" that perform actions. MCP servers are "resources" that provide reference data. Skills query MCP servers when they need specifications, patterns, or user impact data.
 
+## Orchestrated Workflow
+
+The `a11y-audit-fix-agent-orchestrator` coordinates a 3-stage workflow where skills query MCP servers for authoritative data:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  STAGE 1: ANALYSIS                                                          │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  web-standards ──────► Static HTML/ARIA analysis                            │
+│       │                                                                     │
+│       ├── aria-mcp: validate-role-attributes(), get-required-attributes()  │
+│       └── wcag-mcp: get-criterion() for WCAG mapping                        │
+│                                                                             │
+│  a11y-tester ────────► Runtime axe-core testing                             │
+│       │                                                                     │
+│       ├── wcag-mcp: enrich violations with SC details                       │
+│       └── a11y-personas-mcp: identify affected user groups                  │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  STAGE 2: REMEDIATION                                                       │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  a11y-remediator ────► Generate fixes for each issue                        │
+│       │                                                                     │
+│       ├── magentaa11y-mcp: get_web_component() for correct patterns         │
+│       ├── aria-mcp: get-role(), validate-role-attributes()                  │
+│       ├── wcag-mcp: get-techniques-for-criterion()                          │
+│       └── a11y-personas-mcp: get-personas() for user impact                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│  STAGE 3: VALIDATION                                                        │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  a11y-validator ─────► Verify fixes resolved issues                         │
+│       │                                                                     │
+│       └── magentaa11y-mcp: get_web_component() for acceptance criteria      │
+│                                                                             │
+│  a11y-tester ────────► Re-run tests to confirm                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Example: Fixing a Button Issue
+
+```
+1. web-standards finds: "div with onclick has no accessible name"
+   └── Queries aria-mcp: get-role("button") → confirms role requirements
+
+2. a11y-remediator generates fix:
+   ├── Queries magentaa11y-mcp: get_web_component("button") → gets pattern
+   ├── Queries aria-mcp: get-required-attributes("button") → validates ARIA
+   ├── Queries wcag-mcp: get-criterion("4.1.2") → maps to WCAG SC
+   └── Queries a11y-personas-mcp: get-personas([...]) → documents impact
+
+3. a11y-validator confirms:
+   └── Queries magentaa11y-mcp: get_web_component("button") → checks criteria
+```
+
 ## Setup
 
 ### Quick Start with Deployment Script
