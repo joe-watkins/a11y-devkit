@@ -392,5 +392,6 @@ For detailed reference data, query these MCP servers:
 | ARIA specs | `aria-mcp` | [github.com/joe-watkins/aria-mcp](https://github.com/joe-watkins/aria-mcp) | `get-role("button")`, `validate-role-attributes(...)` |
 | Component patterns | `magentaa11y-mcp` | [github.com/joe-watkins/magentaa11y-mcp](https://github.com/joe-watkins/magentaa11y-mcp) | `get_web_component("button")`, `get_component_developer_notes("modal")` |
 | User personas | `a11y-personas-mcp` | [github.com/joe-watkins/a11y-personas-mcp](https://github.com/joe-watkins/a11y-personas-mcp) | `list-personas()`, `get-personas(["blindness-screen-reader-nvda"])` |
+| Issue templates | `accessibility-issues-template-mcp` | [github.com/joe-watkins/accessibility-issues-template-mcp](https://github.com/joe-watkins/accessibility-issues-template-mcp) | `format_axe_violation(...)`, `list_issue_templates()`, `get_issue_template(...)` |
 
 > **Philosophy:** Skills are "doers" — they perform actions. MCP servers are "resources" — they provide reference data. Skills query MCP servers when they need specifications or patterns.

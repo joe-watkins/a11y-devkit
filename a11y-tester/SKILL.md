@@ -42,11 +42,23 @@ To verify Playwright MCP is available, look for these tools in your chat context
 
 If these tools are not available, you need to complete the setup above.
 
+## Prerequisites: Accessibility Issues Template MCP
+
+This skill uses the **accessibility-issues-template-mcp** to format axe-core violations into standardized, JIRA-ready issue templates. Ensure this MCP server is configured in your IDE.
+
+**Repository:** [github.com/joe-watkins/accessibility-issues-template-mcp](https://github.com/joe-watkins/accessibility-issues-template-mcp)
+
+The MCP provides these tools:
+- `format_axe_violation` - Convert axe violations to formatted issue reports
+- `list_issue_templates` - List all available issue templates
+- `get_issue_template` - Get a specific template by name
+- `validate_issue` - Validate formatted issue content
+
 ## Testing Workflow
 
 1. **Navigate to URL**: Use `mcp_playwright_browser_navigate` to load the page
 2. **Run axe-core**: Use `mcp_playwright_browser_evaluate` to inject and run axe-core
-3. **Format violations as issues**: Use `mcp_accessibility_format_violations` with the violations array
+3. **Format violations as issues**: Use `format_axe_violation` for each violation from the accessibility-issues-template-mcp
 4. **Present results**: Output a summary table followed by each formatted issue
 
 ## Expected Output Format
@@ -139,31 +151,59 @@ This returns JSON with a `violations` array needed for issue formatting.
 
 ## Step 3: Format Violations as Issues
 
-Pass the violations array from the axe-core results to the issue formatter:
+Use the **accessibility-issues-template-mcp** tools to format violations into standardized issues.
+
+### Option A: Format Individual Violations
+
+For each violation in the axe-core results, call `format_axe_violation`:
 
 ```
-mcp_accessibility_format_violations(
-  violations: [array from step 1],
+format_axe_violation(
+  violation: {
+    id: "color-contrast",
+    impact: "serious",
+    tags: ["wcag2aa", "wcag143"],
+    description: "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
+    help: "Elements must have sufficient color contrast",
+    helpUrl: "https://dequeuniversity.com/rules/axe/4.8/color-contrast",
+    nodes: [{ /* node data from axe */ }]
+  },
   context: {
     url: "https://example.com",
-    browser: "Chrome",
-    operatingSystem: "Windows",
-    stepsToReproduce: "Navigate to page"
-  },
-  outputFormat: "markdown"
+    browser: "Chromium",
+    operatingSystem: "Windows"
+  }
 )
 ```
 
-Creates one issue per failing element using the standardized template.
+### Option B: Use Pre-built Templates
 
-### Available Tools
+For known violation types, get the template directly:
+
+```
+# List all available templates
+list_issue_templates()
+
+# Get a specific template
+get_issue_template(templateName: "color-contrast")
+```
+
+### Option C: Validate Custom Issues
+
+After formatting, validate the issue content:
+
+```
+validate_issue(issue: { /* formatted issue object */ })
+```
+
+### Available Tools (accessibility-issues-template-mcp)
 
 | Tool | Purpose |
 |------|---------|
-| `mcp_accessibility_format_violations` | Convert axe violations to issue reports |
-| `mcp_accessibility_list_issue_templates` | List available issue templates |
-| `mcp_accessibility_get_issue_template` | Get a specific template |
-| `mcp_accessibility_validate_issue` | Validate formatted issue content |
+| `format_axe_violation` | Convert a single axe violation to a formatted issue report |
+| `list_issue_templates` | List all 28+ available issue templates |
+| `get_issue_template` | Get a specific template by axe rule ID |
+| `validate_issue` | Validate formatted issue content for completeness |
 
 ## Issue Output Format
 
@@ -243,12 +283,14 @@ X.X.X Success Criterion Name (A or AA)
 
 | axe Rule | Template Available |
 |----------|-------------------|
-| `label` | `web/control-lacks-a-label-in-the-code.md` |
-| `heading-order` | `web/heading-levels-incorrectly-nested.md` |
-| `image-alt` (decorative) | `web/images-should-be-marked-as-decorative.md` |
-| keyboard issues | `web/interactive-element-is-not-keyboard-accessible.md` |
+| `color-contrast` | Color contrast issue template |
+| `label` | Control lacks a label template |
+| `heading-order` | Heading levels incorrectly nested template |
+| `image-alt` | Image alternative text template |
+| `button-name` | Button name template |
+| `link-name` | Link name template |
 
-Use `mcp_accessibility_get_issue_template(templateName)` for pre-formatted issue content.
+Use `get_issue_template(templateName: "color-contrast")` to retrieve pre-formatted issue templates, or `list_issue_templates()` to see all 28+ available templates.
 
 ## Optional: Enrich Results with MCP Servers
 
@@ -276,7 +318,8 @@ a11y-personas-mcp: get-personas(["blindness-screen-reader-nvda"])
 
 - Use Playwright browser tools (`mcp_playwright_browser_navigate` + `mcp_playwright_browser_evaluate`) to run axe-core
 - Axe-core is injected from CDN: `https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.8.4/axe.min.js`
-- The `violations` array from axe results feeds into `mcp_accessibility_format_violations`
+- The `violations` array from axe results feeds into `format_axe_violation` from the accessibility-issues-template-mcp
+- The MCP provides 28 specialized templates covering common AxeCore rules plus a fallback for 100+ additional rules
 - Each failing element becomes a separate issue
 - Axe-core catches ~30-40% of issues; combine with manual review of `mcp_playwright_browser_snapshot` for comprehensive testing
 - **Always output a summary first**, then the detailed issues, then recommendations
