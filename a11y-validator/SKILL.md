@@ -1,6 +1,6 @@
 ---
 name: a11y-validator
-description: Verify that accessibility fixes resolve identified issues by re-running tests and checking against acceptance criteria. Use this skill after fixes have been generated to confirm they work correctly. Uses a11y-tester for runtime re-testing and magentaa11y for acceptance criteria verification. Part of the a11y-orchestrator workflow.
+description: Verify that accessibility fixes resolve identified issues by re-running tests and checking against acceptance criteria. Use this skill after fixes have been generated to confirm they work correctly. Uses a11y-tester for runtime re-testing and magentaa11y-mcp for acceptance criteria verification. Part of the a11y-orchestrator workflow.
 ---
 
 # Accessibility Validator
@@ -11,7 +11,9 @@ Confirms that generated fixes resolve accessibility issues.
 
 1. **Apply fixes** to the code
 2. **Re-run tests** to check if issues are resolved
-3. **Check acceptance criteria** against magentaa11y patterns
+3. **Check acceptance criteria** — query `magentaa11y-mcp`:
+   - `get_web_component("button")` → Returns acceptance criteria
+   - `get_component_gherkin("button")` → Returns Gherkin test syntax
 4. **Categorize results** as fixed, needs-manual, or still-failing
 
 ## Re-Testing Process
@@ -43,13 +45,16 @@ Re-apply the `web-standards` skill analysis:
 
 ## Acceptance Criteria Verification
 
-**Consult magentaa11y** for component acceptance criteria.
+**Query magentaa11y-mcp** for component acceptance criteria:
+- `get_web_component("button")` → Returns full acceptance criteria
+- `get_component_gherkin("button")` → Returns Gherkin test syntax
+- `get_component_developer_notes("button")` → Returns implementation notes
 
 For each fix, verify it meets the documented acceptance criteria:
 
 ### Example: Button Fix Validation
 
-From magentaa11y button criteria, verify:
+From magentaa11y-mcp button criteria, verify:
 - [ ] Has accessible name (visible text or aria-label)
 - [ ] Role is "button" (native or ARIA)
 - [ ] Keyboard operable (Enter/Space activates)
@@ -58,7 +63,7 @@ From magentaa11y button criteria, verify:
 
 ### Example: Form Input Fix Validation
 
-From magentaa11y text-input criteria, verify:
+From magentaa11y-mcp text-input criteria, verify:
 - [ ] Label programmatically associated
 - [ ] Required state communicated
 - [ ] Error messages associated via aria-describedby
@@ -66,7 +71,7 @@ From magentaa11y text-input criteria, verify:
 
 ### Example: Link Fix Validation
 
-From magentaa11y link criteria, verify:
+From magentaa11y-mcp link criteria, verify:
 - [ ] Has accessible name
 - [ ] Role is "link"
 - [ ] Keyboard operable (Enter activates)
@@ -85,7 +90,7 @@ Issue confirmed resolved:
 ### Issue #N: [Description]
 **Status:** ✅ Fixed
 **Verification:** axe-core passes / static check passes
-**Criteria Met:** [List from magentaa11y]
+**Criteria Met:** [List from magentaa11y-mcp]
 ```
 
 ### ⚠️ Needs Manual Review
@@ -101,7 +106,7 @@ Cannot automatically verify:
 **Status:** ⚠️ Needs Manual Review
 **Reason:** [Why automated verification isn't possible]
 **Manual Check:** [What human should verify]
-**Guidance:** [Link to magentaa11y or other resource]
+**Guidance:** Query magentaa11y-mcp for component pattern
 ```
 
 ### ❌ Still Failing
@@ -203,9 +208,9 @@ After validation, verify no new issues introduced:
 
 ## Quick Reference
 
-| Validation Type | Tool/Skill | Pass Criteria |
-|-----------------|------------|---------------|
-| axe violations | a11y-tester | Violation no longer reported |
-| Static patterns | web-standards | Anti-pattern removed |
-| Acceptance criteria | magentaa11y | All criteria checked |
+| Validation Type | Tool/Resource | Pass Criteria |
+|-----------------|---------------|---------------|
+| axe violations | a11y-tester skill | Violation no longer reported |
+| Static patterns | web-standards skill | Anti-pattern removed |
+| Acceptance criteria | magentaa11y-mcp | All criteria checked |
 | Visual checks | Manual | Human verification |

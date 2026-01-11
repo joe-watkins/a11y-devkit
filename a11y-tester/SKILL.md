@@ -250,6 +250,28 @@ X.X.X Success Criterion Name (A or AA)
 
 Use `mcp_accessibility_get_issue_template(templateName)` for pre-formatted issue content.
 
+## Optional: Enrich Results with MCP Servers
+
+After running axe-core tests, you can enrich results by querying accessibility MCP servers:
+
+### WCAG Mapping (wcag-mcp)
+```
+wcag-mcp: get-criterion("4.1.2")
+→ Returns full SC details, understanding docs, techniques
+```
+
+### Component Patterns (magentaa11y-mcp)
+```
+magentaa11y-mcp: get_web_component("button")
+→ Returns acceptance criteria and developer notes
+```
+
+### User Impact (a11y-personas-mcp)
+```
+a11y-personas-mcp: get-personas(["blindness-screen-reader-nvda"])
+→ Returns persona details showing who is affected
+```
+
 ## Notes
 
 - Use Playwright browser tools (`mcp_playwright_browser_navigate` + `mcp_playwright_browser_evaluate`) to run axe-core
