@@ -12,13 +12,22 @@ A collection of accessibility-centric skills for AI agents and editors.
 | a11y-remediator | Generate accessibility fixes for identified issues | `a11y-remediator/SKILL.md` | |
 | a11y-tester | Automated WCAG testing with axe-core | `a11y-tester/SKILL.md` | |
 | a11y-validator | Verify that accessibility fixes resolve identified issues | `a11y-validator/SKILL.md` | |
-| aria-expert | WAI-ARIA roles, states, properties, and API mappings | `aria-expert/SKILL.md` | ✓ |
-| magentaa11y | Component accessibility acceptance criteria | `magentaa11y/SKILL.md` | ✓ |
 | skill-creator | Guide for creating new skills | `skill-creator/SKILL.md` | |
-| wcag-expert | WCAG 2.2 guidelines reference | `wcag-expert/SKILL.md` | ✓ |
 | web-standards | Static HTML/CSS/ARIA analysis without requiring a browser | `web-standards/SKILL.md` | |
 
 > Skills with ✓ in Setup have a `setup.sh` script to download reference data.
+
+## MCP Resources (Separate Repositories)
+
+For detailed reference data, use MCP servers instead of skills:
+
+| Resource | Purpose | Use As |
+|----------|---------|--------|
+| wcag-expert | WCAG 2.2 guidelines, success criteria, techniques | MCP server |
+| aria-expert | WAI-ARIA roles, states, properties, patterns | MCP server |
+| magentaa11y | Component accessibility acceptance criteria | MCP server |
+
+> **Philosophy:** Skills are "doers" that perform actions. MCP servers are "resources" that provide reference data. Skills can query MCP servers when they need specifications or patterns.
 
 ## Setup
 
