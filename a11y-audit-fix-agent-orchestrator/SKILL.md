@@ -154,7 +154,7 @@ Before applying any fix, use axe-core recommendations as the primary guidance:
 │         ▼                               ▼                  │
 │  ┌─────────────┐                ┌─────────────┐            │
 │  │a11y-personas│                │  Apply Fix  │            │
-│  │ User Impact │                │  to Code    │            │
+│  │    -mcp     │                │  to Code    │            │
 │  └─────────────┘                └─────────────┘            │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -178,10 +178,10 @@ For each issue identified in Stage 1:
    - ARIA roles, states, and properties
    - Component accessibility patterns and acceptance criteria
 
-4. **Consult `a11y-personas`** — Understand user impact:
-   - Which users are affected by this issue?
-   - How does it impact their experience?
-   - What is the severity from a user perspective?
+4. **Query `a11y-personas-mcp`** — Understand user impact:
+   - `list-personas()` → Returns all 69 personas
+   - `get-personas(["blindness-screen-reader-nvda"])` → Returns specific persona details
+   - Which users are affected? How does it impact their experience?
 
 5. **Apply the fix** — Based on axe-core guidance and MCP resources:
    - Prefer axe-core recommendations as the authoritative source
@@ -231,7 +231,7 @@ For each fixable issue, document:
 - Fix suggestion: [failureSummary]
 
 **WCAG:** [Success criterion if known]
-**Personas affected:** [List from a11y-personas]
+**Personas affected:** [Query a11y-personas-mcp]
 
 **Before:**
 ```html
@@ -380,17 +380,17 @@ Identify framework (React, Vue, etc.) and adapt patterns accordingly.
 | Runtime testing | `a11y-tester` | axe-core violations |
 | Generate fixes | `a11y-remediator` | Applies accessibility fixes |
 | Verify fixes | `a11y-validator` | Confirms issues resolved |
-| User impact | `a11y-personas` | Who is affected and how |
 | Base patterns | `a11y-base-web` | Foundational requirements |
 
 ## MCP Resources (External)
 
-For detailed reference data, use MCP servers if available:
+For detailed reference data, query these MCP servers:
 
-| Resource Type | MCP Server | Provides |
-|---------------|------------|----------|
-| WCAG guidelines | wcag-expert | Success criteria, techniques, failures |
-| ARIA specifications | aria-expert | Roles, states, properties, patterns |
-| Component patterns | magentaa11y | Acceptance criteria, code examples |
+| Resource | MCP Server | Repository | Example Tools |
+|----------|------------|------------|---------------|
+| WCAG guidelines | `wcag-mcp` | [github.com/joe-watkins/wcag-mcp](https://github.com/joe-watkins/wcag-mcp) | `get-criterion("4.1.2")`, `get-techniques-for-criterion("1.3.1")` |
+| ARIA specs | `aria-mcp` | [github.com/joe-watkins/aria-mcp](https://github.com/joe-watkins/aria-mcp) | `get-role("button")`, `validate-role-attributes(...)` |
+| Component patterns | `magentaa11y-mcp` | [github.com/joe-watkins/magentaa11y-mcp](https://github.com/joe-watkins/magentaa11y-mcp) | `get_web_component("button")`, `get_component_developer_notes("modal")` |
+| User personas | `a11y-personas-mcp` | [github.com/joe-watkins/a11y-personas-mcp](https://github.com/joe-watkins/a11y-personas-mcp) | `list-personas()`, `get-personas(["blindness-screen-reader-nvda"])` |
 
-> Skills are "doers" — they perform actions. MCP servers are "resources" — they provide reference data.
+> **Philosophy:** Skills are "doers" — they perform actions. MCP servers are "resources" — they provide reference data. Skills query MCP servers when they need specifications or patterns.

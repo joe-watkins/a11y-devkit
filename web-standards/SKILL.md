@@ -1,6 +1,6 @@
 ---
 name: web-standards
-description: Static HTML/CSS/ARIA analysis without requiring a browser. Use this skill when analyzing code for semantic HTML issues, ARIA validity, landmark structure, heading hierarchy, form labeling, or any accessibility problems detectable from source code. Delegates to aria-expert for ARIA rules and wcag-expert for success criteria mapping. Part of the a11y-orchestrator workflow.
+description: Static HTML/CSS/ARIA analysis without requiring a browser. Use this skill when analyzing code for semantic HTML issues, ARIA validity, landmark structure, heading hierarchy, form labeling, or any accessibility problems detectable from source code. Queries aria-mcp for ARIA rules and wcag-mcp for success criteria mapping. Part of the a11y-orchestrator workflow.
 ---
 
 # Web Standards Analyzer
@@ -28,7 +28,12 @@ Check for proper semantic element usage:
 
 ### 2. ARIA Validity
 
-Consult the `aria-expert` skill for authoritative ARIA rules. Check for:
+Query `aria-mcp` for authoritative ARIA rules:
+- `get-role("button")` → Returns role requirements
+- `validate-role-attributes("button", ["aria-pressed"])` → Validates ARIA usage
+- `get-prohibited-attributes("button")` → Returns disallowed attributes
+
+Check for:
 
 **Invalid ARIA on semantic elements:**
 - `<button role="button">` — redundant
@@ -45,7 +50,10 @@ Consult the `aria-expert` skill for authoritative ARIA rules. Check for:
 - `aria-expanded` on elements without expandable content
 - `aria-selected` outside selection contexts
 
-**Consult aria-expert** for role-specific requirements when custom widgets are found.
+**Query aria-mcp** for role-specific requirements when custom widgets are found:
+- `get-required-attributes("tabpanel")` → Returns required attributes
+- `get-required-context("tab")` → Returns required parent context
+- `suggest-role("dropdown menu")` → Suggests appropriate role
 
 ### 3. Landmark Structure
 
@@ -72,7 +80,7 @@ Verify heading structure:
 3. Headings should reflect content hierarchy
 4. Visual headings should be semantic headings
 
-**Map to wcag-expert:** SC 1.3.1 Info and Relationships
+**Query wcag-mcp:** `get-criterion("1.3.1")` for Info and Relationships
 
 ### 5. Form Accessibility
 
@@ -104,7 +112,7 @@ Check all images and graphics:
 | `<svg>` | Has accessible name or `aria-hidden` | SVG not labeled or hidden |
 | Icon fonts | Has text alternative | Icon-only with no text |
 
-**Map to wcag-expert:** SC 1.1.1 Non-text Content
+**Query wcag-mcp:** `get-criterion("1.1.1")` for Non-text Content
 
 ### 7. Keyboard Accessibility
 
@@ -117,7 +125,7 @@ Static checks for keyboard support:
 | `onclick` without keyboard handler | Mouse-only interaction |
 | Non-focusable interactive | Custom widget without `tabindex="0"` |
 
-**Map to wcag-expert:** SC 2.1.1 Keyboard
+**Query wcag-mcp:** `get-criterion("2.1.1")` for Keyboard
 
 ### 8. Text and Contrast (CSS)
 
@@ -130,7 +138,7 @@ Check CSS for potential issues:
 | Fixed font sizes | May prevent text resize |
 | `user-select: none` | May prevent text selection |
 
-**Map to wcag-expert:** SC 2.4.7 Focus Visible, SC 1.4.4 Resize Text
+**Query wcag-mcp:** `get-criterion("2.4.7")` for Focus Visible, `get-criterion("1.4.4")` for Resize Text
 
 ## Output Format
 
@@ -145,7 +153,7 @@ Found X accessibility issues:
 - **Location:** [file:line or element path]
 - **Category:** [Semantic HTML/ARIA/Landmarks/etc.]
 - **Severity:** [Critical/Serious/Moderate/Minor]
-- **WCAG:** [Success criterion from wcag-expert]
+- **WCAG:** [Success criterion from wcag-mcp]
 - **Code:**
 ```html
 [problematic code]
@@ -164,12 +172,12 @@ Found X accessibility issues:
 | Moderate | Degrades experience (redundant ARIA, poor semantics) |
 | Minor | Best practice violation (optimization opportunities) |
 
-## Delegation Points
+## MCP Server Queries
 
-When you encounter these situations, consult the referenced skill:
+When you encounter these situations, query the referenced MCP server:
 
-| Situation | Consult | For |
-|-----------|---------|-----|
-| Custom ARIA widget | `aria-expert` | Required roles/states/properties |
-| WCAG criterion details | `wcag-expert` | Technique recommendations |
-| Correct implementation | `magentaa11y` | Code patterns |
+| Situation | Query MCP | Example Tool |
+|-----------|-----------|--------------|
+| Custom ARIA widget | `aria-mcp` | `get-required-attributes("dialog")` |
+| WCAG criterion details | `wcag-mcp` | `get-techniques-for-criterion("1.3.1")` |
+| Correct implementation | `magentaa11y-mcp` | `get_component_developer_notes("modal")` |
