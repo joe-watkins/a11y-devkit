@@ -14,6 +14,21 @@ A collection of accessibility-centric skills for AI agents and editors.
 | skill-creator | Guide for creating new skills | `skill-creator/SKILL.md` |
 | web-standards | Static HTML/CSS/ARIA analysis without requiring a browser | `web-standards/SKILL.md` |
 
+## MCP Dependencies (Separate Repositories)
+
+These MCP (Model Context Protocol) servers are needed for these Skills to work best. Make sure you have these MCP servers running and accessible to your IDE/agent for the skills to query reference data effectively.
+
+For detailed reference data, query these MCP servers:
+
+| Resource | Purpose | Repository |
+|----------|---------|------------|
+| wcag-mcp | WCAG 2.2 guidelines, success criteria, techniques | [github.com/joe-watkins/wcag-mcp](https://github.com/joe-watkins/wcag-mcp) |
+| aria-mcp | WAI-ARIA roles, states, properties, patterns | [github.com/joe-watkins/aria-mcp](https://github.com/joe-watkins/aria-mcp) |
+| magentaa11y-mcp | Component accessibility acceptance criteria | [github.com/joe-watkins/magentaa11y-mcp](https://github.com/joe-watkins/magentaa11y-mcp) |
+| a11y-personas-mcp | Accessibility personas for diverse user needs | [github.com/joe-watkins/a11y-personas-mcp](https://github.com/joe-watkins/a11y-personas-mcp) |
+
+> **Philosophy:** Skills are "doers" that perform actions. MCP servers are "resources" that provide reference data. Skills query MCP servers when they need specifications, patterns, or user impact data.
+
 ## Prompt Examples
 
 ### Testing a Website for Accessibility
@@ -53,18 +68,6 @@ This prompt would trigger a comprehensive accessibility workflow using multiple 
 
 The orchestrator skill manages this entire pipeline, ensuring comprehensive testing and remediation.
 
-## MCP Resources (Separate Repositories)
-
-For detailed reference data, query these MCP servers:
-
-| Resource | Purpose | Repository |
-|----------|---------|------------|
-| wcag-mcp | WCAG 2.2 guidelines, success criteria, techniques | [github.com/joe-watkins/wcag-mcp](https://github.com/joe-watkins/wcag-mcp) |
-| aria-mcp | WAI-ARIA roles, states, properties, patterns | [github.com/joe-watkins/aria-mcp](https://github.com/joe-watkins/aria-mcp) |
-| magentaa11y-mcp | Component accessibility acceptance criteria | [github.com/joe-watkins/magentaa11y-mcp](https://github.com/joe-watkins/magentaa11y-mcp) |
-| a11y-personas-mcp | Accessibility personas for diverse user needs | [github.com/joe-watkins/a11y-personas-mcp](https://github.com/joe-watkins/a11y-personas-mcp) |
-
-> **Philosophy:** Skills are "doers" that perform actions. MCP servers are "resources" that provide reference data. Skills query MCP servers when they need specifications, patterns, or user impact data.
 
 ## Orchestrated Workflow
 
