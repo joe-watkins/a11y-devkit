@@ -17,6 +17,45 @@ A collection of accessibility-centric skills for AI agents and editors.
 
 > Skills with ✓ in Setup have a `setup.sh` script to download reference data.
 
+## Prompt Examples
+
+### Testing a Website for Accessibility
+
+**Prompt:** "Test https://example.com/ for accessibility"
+
+This prompt would trigger a comprehensive accessibility workflow using multiple skills:
+
+1. **a11y-audit-fix-agent-orchestrator** - Coordinates the overall accessibility audit workflow
+   - Manages the testing, remediation, and validation cycle
+   - Orchestrates communication between specialized skills
+
+2. **a11y-tester** - Performs automated WCAG testing
+   - Runs axe-core automated accessibility tests on the website
+   - Identifies WCAG violations, best practice issues, and warnings
+   - Generates detailed reports with violation descriptions and affected elements
+
+3. **web-standards** - Analyzes HTML/CSS/ARIA patterns
+   - Reviews the page structure for semantic HTML usage
+   - Validates ARIA attributes and roles
+   - Checks for proper landmark structure and heading hierarchy
+
+4. **a11y-personas** - Considers diverse user perspectives
+   - Evaluates the site from the perspective of users with disabilities
+   - Identifies potential barriers for screen reader users, keyboard-only users, etc.
+   - Suggests improvements based on real-world user needs
+
+5. **a11y-remediator** (if issues found) - Generates accessibility fixes
+   - Creates code patches to resolve identified violations
+   - Provides alternative implementations that meet WCAG standards
+   - Suggests best practices for preventing similar issues
+
+6. **a11y-validator** (after fixes) - Verifies remediation success
+   - Re-tests the page to confirm fixes resolve the original issues
+   - Ensures no new accessibility problems were introduced
+   - Validates that the site meets target WCAG conformance level
+
+The orchestrator skill manages this entire pipeline, ensuring comprehensive testing and remediation.
+
 ## MCP Resources (Separate Repositories)
 
 For detailed reference data, use MCP servers instead of skills:
