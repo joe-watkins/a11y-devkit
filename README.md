@@ -12,8 +12,9 @@ This is experimental and evolving, so expect new skills to be added over time. T
 |-------|---------|------|
 | a11y-audit-fix-agent-orchestrator | Coordinate full accessibility audit workflow across multiple skills | `a11y-audit-fix-agent-orchestrator/SKILL.md` |
 | a11y-base-web | Foundational accessibility patterns and requirements for AI-generated web code | `a11y-base-web/SKILL.md` |
+| a11y-issue-writer | Format axe-core violations into standardized JIRA-ready issue reports | `a11y-issue-writer/SKILL.md` |
 | a11y-remediator | Generate accessibility fixes for identified issues | `a11y-remediator/SKILL.md` |
-| a11y-tester | Automated WCAG testing with axe-core | `a11y-tester/SKILL.md` |
+| a11y-tester | Automated WCAG testing with axe-core (outputs raw violations or delegates formatting) | `a11y-tester/SKILL.md` |
 | a11y-validator | Verify that accessibility fixes resolve identified issues | `a11y-validator/SKILL.md` |
 | skill-creator | Guide for creating new skills | `skill-creator/SKILL.md` |
 | web-standards | Static HTML/CSS/ARIA analysis without requiring a browser | `web-standards/SKILL.md` |
@@ -49,24 +50,29 @@ This prompt would trigger a comprehensive accessibility workflow using multiple 
 2. **a11y-tester** - Performs automated WCAG testing
    - Runs axe-core automated accessibility tests on the website
    - Identifies WCAG violations, best practice issues, and warnings
-   - Generates detailed reports with violation descriptions and affected elements
+   - Outputs raw violations for orchestrator or delegates to a11y-issue-writer for formatted reports
 
-3. **web-standards** - Analyzes HTML/CSS/ARIA patterns
+3. **a11y-issue-writer** (optional) - Formats violations as standardized issues
+   - Converts axe-core violations into JIRA-ready issue templates
+   - Provides detailed remediation guidance and code examples
+   - Uses accessibility-issues-template-mcp for standardized formatting and pre-formatted issues
+
+4. **web-standards** - Analyzes HTML/CSS/ARIA patterns
    - Reviews the page structure for semantic HTML usage
    - Validates ARIA attributes and roles
    - Checks for proper landmark structure and heading hierarchy
 
-4. **a11y-personas** - Considers diverse user perspectives
+5. **a11y-personas** - Considers diverse user perspectives
    - Evaluates the site from the perspective of users with disabilities
    - Identifies potential barriers for screen reader users, keyboard-only users, etc.
    - Suggests improvements based on real-world user needs
 
-5. **a11y-remediator** (if issues found) - Generates accessibility fixes
+6. **a11y-remediator** (if issues found) - Generates accessibility fixes
    - Creates code patches to resolve identified violations
    - Provides alternative implementations that meet WCAG standards
    - Suggests best practices for preventing similar issues
 
-6. **a11y-validator** (after fixes) - Verifies remediation success
+7. **a11y-validator** (after fixes) - Verifies remediation success
    - Re-tests the page to confirm fixes resolve the original issues
    - Ensures no new accessibility problems were introduced
    - Validates that the site meets target WCAG conformance level
@@ -95,10 +101,14 @@ The `a11y-audit-fix-agent-orchestrator` coordinates a 3-stage workflow where ski
 │       ├── aria-mcp: validate-role-attributes(), get-required-attributes()  │
 │       └── wcag-mcp: get-criterion() for WCAG mapping                        │
 │                                                                             │
-│  a11y-tester ────────► Runtime axe-core testing                             │
+│  a11y-tester ────────► Runtime axe-core testing (returns raw violations)    │
 │       │                                                                     │
 │       ├── wcag-mcp: enrich violations with SC details                       │
 │       └── a11y-personas-mcp: identify affected user groups                  │
+│                                                                             │
+│  a11y-issue-writer ──► (Optional) Format violations as standardized issues  │
+│       │                                                                     │
+│       └── accessibility-issues-template-mcp: format_axe_violation()         │
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -140,6 +150,43 @@ The `a11y-audit-fix-agent-orchestrator` coordinates a 3-stage workflow where ski
 3. a11y-validator confirms:
    └── Queries magentaa11y-mcp: get_web_component("button") → checks criteria
 ```
+
+## Skill Delegation Model
+
+The skills use a **delegation pattern** for specialized tasks, particularly for issue formatting:
+
+### a11y-tester → a11y-issue-writer Delegation
+
+**a11y-tester** has two output modes:
+
+1. **Raw violations** (default for orchestrator):
+   - Returns axe-core violations array as JSON
+   - Used when called by orchestrator or when programmatic processing is needed
+   - Provides raw data for further analysis
+
+2. **Formatted issues** (via delegation):
+   - Delegates to **a11y-issue-writer** when user requests "write issues" or "create tickets"
+   - a11y-issue-writer calls `format_axe_violation` from accessibility-issues-template-mcp
+   - Outputs JIRA-ready issue templates with remediation guidance
+
+**Example delegation flow:**
+
+```
+User: "Test this site for accessibility and write issues"
+  │
+  ├─► a11y-tester runs axe-core → collects violations
+  │
+  └─► a11y-tester delegates to a11y-issue-writer
+        │
+        └─► a11y-issue-writer formats each violation using
+            accessibility-issues-template-mcp → outputs standardized issues
+```
+
+**When to use each mode:**
+- **Raw violations**: "test accessibility", when called by orchestrator, for CI/CD pipelines
+- **Formatted issues**: "write issues", "create tickets", "format as JIRA", for bug tracking
+
+This separation keeps testing logic separate from formatting logic, making skills more focused and reusable.
 
 ## Setup
 
