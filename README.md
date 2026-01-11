@@ -75,6 +75,14 @@ The `a11y-audit-fix-agent-orchestrator` coordinates a 3-stage workflow where ski
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
+│  INITIALIZATION: Load Base Patterns                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  a11y-base-web ───────► Foundational accessibility patterns loaded          │
+│                         Provides core requirements for all other skills     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
 │  STAGE 1: ANALYSIS                                                          │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │  web-standards ──────► Static HTML/ARIA analysis                            │
