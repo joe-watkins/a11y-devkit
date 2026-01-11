@@ -2,9 +2,9 @@
 
 A collection of accessibility-centric skills for AI agents and editors.
 
-Note: These skills are designed to work together in an orchestrated workflow, but can also be used independently as needed. Each skill focuses on a specific aspect of accessibility auditing and remediation, allowing for modular use based on the task at hand. 
+> **Note:** These skills are designed to work together in an orchestrated workflow and require MCP servers to provide reference data, but can also be used independently as needed. Each skill focuses on a specific aspect of accessibility auditing and remediation, allowing for modular use based on the task at hand. 
 
-This is experimental and evolving, so expect new skills to be added over time. The goal is to create a comprehensive toolkit for AI-driven accessibility improvements in web development.
+This is experimental and evolving, so expect new skills to be added over time. The goal is to create a comprehensive toolkit for AI-driven accessibility improvements in development.
 
 ## Available Skills
 
