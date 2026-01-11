@@ -1,11 +1,11 @@
 ---
 name: a11y-tester
-description: Run automated accessibility tests on URLs or HTML content using axe-core engine to WCAG 2.2 AA standards, then format findings as standardized issue reports. Use this skill when users want to test website accessibility, find WCAG violations, audit pages for accessibility issues, check if sites are accessible, analyze HTML for accessibility problems, or create accessibility issue tickets. Triggers on requests like "test accessibility", "check for WCAG violations", "audit this URL", "is this page accessible", "find accessibility issues", or "write accessibility issues".
+description: Run automated accessibility tests on URLs or HTML content using axe-core engine to WCAG 2.2 AA standards. Use this skill when users want to test website accessibility, find WCAG violations, audit pages for accessibility issues, check if sites are accessible, or analyze HTML for accessibility problems. Output can be raw violations or formatted issues (delegates to a11y-issue-writer). Triggers on requests like "test accessibility", "check for WCAG violations", "audit this URL", "is this page accessible", or "find accessibility issues".
 ---
 
 # Accessibility Tester
 
-Run automated accessibility testing and format findings as standardized issue reports.
+Run automated accessibility testing using axe-core and output violations in raw format or as formatted issues.
 
 ## Prerequisites: Playwright MCP Setup
 
@@ -42,28 +42,71 @@ To verify Playwright MCP is available, look for these tools in your chat context
 
 If these tools are not available, you need to complete the setup above.
 
-## Prerequisites: Accessibility Issues Template MCP
+## Output Options
 
-This skill uses the **accessibility-issues-template-mcp** to format axe-core violations into standardized, JIRA-ready issue templates. Ensure this MCP server is configured in your IDE.
+This skill provides two output modes:
 
-**Repository:** [github.com/joe-watkins/accessibility-issues-template-mcp](https://github.com/joe-watkins/accessibility-issues-template-mcp)
+1. **Raw violations** - Return the axe-core violations array as JSON for programmatic use or further processing
+2. **Formatted issues** - Delegate to the **a11y-issue-writer** skill to format violations as standardized, JIRA-ready issue reports
 
-The MCP provides these tools:
-- `format_axe_violation` - Convert axe violations to formatted issue reports
-- `list_issue_templates` - List all available issue templates
-- `get_issue_template` - Get a specific template by name
-- `validate_issue` - Validate formatted issue content
+**When to use each:**
+- **Raw violations**: When requested explicitly, for debugging, or when called by other skills (e.g., orchestrator)
+- **Formatted issues**: When users request "write issues", "create tickets", or want actionable bug reports
+
+**Note:** The a11y-issue-writer skill requires the accessibility-issues-template-mcp server. See the a11y-issue-writer skill documentation for details.
 
 ## Testing Workflow
 
 1. **Navigate to URL**: Use `mcp_playwright_browser_navigate` to load the page
 2. **Run axe-core**: Use `mcp_playwright_browser_evaluate` to inject and run axe-core
-3. **Format violations as issues**: Use `format_axe_violation` for each violation from the accessibility-issues-template-mcp
-4. **Present results**: Output a summary table followed by each formatted issue
+3. **Output results** - Choose based on request:
+   - **Option A: Raw violations** - Return the violations array with summary statistics
+   - **Option B: Formatted issues** - Delegate to **a11y-issue-writer** skill to format violations as standardized issue reports
+4. **Present results**: Output a summary table followed by violations (raw) or formatted issues (via a11y-issue-writer)
 
 ## Expected Output Format
 
-Always present results in this order:
+### Raw Violations Output
+
+When outputting raw violations (not delegating to a11y-issue-writer), return:
+
+```markdown
+# Accessibility Test Results: [Site Name]
+
+**URL Tested:** https://example.com  
+**Date:** [Current Date]  
+**Tool:** Axe-core 4.8.4 via Playwright  
+**Browser:** Chromium  
+**Operating System:** Windows
+
+## Summary Statistics
+
+| Metric | Count |
+|--------|-------|
+| **Violations** | X |
+| **Passes** | X |
+| **Incomplete** | X |
+| **Inapplicable** | X |
+
+## Violations
+
+[Return the violations array as formatted JSON or summarized table]
+```
+
+This format is ideal for:
+- Programmatic consumption by other skills
+- Debugging test results
+- Integration with CI/CD pipelines
+
+### Formatted Issues Output
+
+When delegating to **a11y-issue-writer** skill, follow this workflow:
+
+1. Run axe-core and collect violations
+2. Delegate to a11y-issue-writer: "Format these violations as standardized issue reports"
+3. The a11y-issue-writer skill will output the full formatted issues
+
+Present results in this order:
 
 ### 1. Report Header
 ```
@@ -147,150 +190,74 @@ async () => {
 }
 ```
 
-This returns JSON with a `violations` array needed for issue formatting.
+This returns JSON with a `violations` array for output or delegation.
 
-## Step 3: Format Violations as Issues
+## Step 3: Output Results
 
-Use the **accessibility-issues-template-mcp** tools to format violations into standardized issues.
+### Option A: Raw Violations
 
-### Option A: Format Individual Violations
+For raw output, present the violations array with summary statistics:
 
-For each violation in the axe-core results, call `format_axe_violation`:
-
-```
-format_axe_violation(
-  violation: {
-    id: "color-contrast",
-    impact: "serious",
-    tags: ["wcag2aa", "wcag143"],
-    description: "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
-    help: "Elements must have sufficient color contrast",
-    helpUrl: "https://dequeuniversity.com/rules/axe/4.8/color-contrast",
-    nodes: [{ /* node data from axe */ }]
-  },
-  context: {
-    url: "https://example.com",
-    browser: "Chromium",
-    operatingSystem: "Windows"
-  }
-)
+```json
+{
+  "violations": [
+    {
+      "id": "color-contrast",
+      "impact": "serious",
+      "tags": ["wcag2aa", "wcag143"],
+      "description": "Ensures the contrast between foreground and background colors meets WCAG 2 AA contrast ratio thresholds",
+      "help": "Elements must have sufficient color contrast",
+      "helpUrl": "https://dequeuniversity.com/rules/axe/4.8/color-contrast",
+      "nodes": [{ /* node data from axe */ }]
+    }
+  ],
+  "passes": 42,
+  "incomplete": 3,
+  "inapplicable": 18
+}
 ```
 
-### Option B: Use Pre-built Templates
+This is useful when:
+- Called by the orchestrator skill that will process violations further
+- User explicitly requests raw data
+- Violations will be fed into another tool or script
 
-For known violation types, get the template directly:
+### Option B: Formatted Issues (Delegate to a11y-issue-writer)
 
+For formatted issue output, **delegate to the a11y-issue-writer skill**:
+
+**Delegation workflow:**
+1. Collect axe-core violations from Step 2
+2. Pass violations to a11y-issue-writer: "Format these [X] violations as standardized accessibility issue reports"
+3. Include context (URL, browser, OS) for the a11y-issue-writer to use
+4. The a11y-issue-writer skill will:
+   - Call `format_axe_violation` from the accessibility-issues-template-mcp
+   - Output complete, JIRA-ready issue reports
+   - Include all required sections (severity, steps to reproduce, code examples, etc.)
+
+**Example delegation:**
 ```
-# List all available templates
-list_issue_templates()
+"I found 5 violations. Delegating to a11y-issue-writer skill to format these as standardized issue reports:
+- color-contrast (2 instances)
+- label (1 instance) 
+- button-name (2 instances)
 
-# Get a specific template
-get_issue_template(templateName: "color-contrast")
-```
-
-### Option C: Validate Custom Issues
-
-After formatting, validate the issue content:
-
-```
-validate_issue(issue: { /* formatted issue object */ })
-```
-
-### Available Tools (accessibility-issues-template-mcp)
-
-| Tool | Purpose |
-|------|---------|
-| `format_axe_violation` | Convert a single axe violation to a formatted issue report |
-| `list_issue_templates` | List all 28+ available issue templates |
-| `get_issue_template` | Get a specific template by axe rule ID |
-| `validate_issue` | Validate formatted issue content for completeness |
-
-## Issue Output Format
-
-Each formatted issue should be fully filled in (no placeholder ###### marks). Example:
-
-```
-### Issue X: [Rule Name] - [Brief Description]
-
-**Severity:** 2-Severe  
-**Priority:** High
-
-**[URL/Path]**  
-https://example.com/
-
-**[Steps to reproduce]**  
-1. Navigate to https://example.com/
-2. Locate the [element description]
-
-**[Element]**  
-The [element type] located in [location description]
-
-**[What is the issue]**  
-[Specific description of the accessibility failure, including measurements like contrast ratios]
-
-**[Why it is important]**  
-[Explanation of impact on users with disabilities]
-
-**[Code reference]**
-```html
-<element class="example">Failing code</element>
+Context: URL https://example.com, Browser: Chromium, OS: Windows"
 ```
 
-**[How to fix]**  
-[Specific remediation guidance]
+The a11y-issue-writer skill handles all formatting, template retrieval, and validation.
 
-**[Compliant code example]**
-```html
-<element class="example" aria-label="Fixed">Compliant code</element>
-```
+**When to delegate:**
+- User requests "write issues", "create tickets", or "format as JIRA"
+- User wants actionable bug reports
+- Output will go into an issue tracking system
 
-**[How to test]**  
-- Automated: Axe-core `rule-id` rule
-- Manual: [Specific manual testing steps]
+**When to output raw violations:**
+- Called by orchestrator skill (orchestrator decides next steps)
+- User explicitly requests raw data
+- Output will be consumed programmatically
 
-**[MagentaA11y]**  
-www.magentaa11y.com/checklist-web/[relevant-page]/
-
-**[Resources]**  
-https://dequeuniversity.com/rules/axe/4.8/[rule-id]
-
-**[WCAG]**  
-X.X.X Success Criterion Name (A or AA)
-
-**[Operating system]** Windows  
-**[Browser]** Chromium (Playwright)  
-**[Assistive technology]** [Relevant AT: Keyboard, JAWS, NVDA, VoiceOver, etc.]
-```
-
-### Key Requirements for Issue Output
-
-1. **No placeholders**: Fill in all ###### marks with actual content
-2. **Specific element descriptions**: Describe where the element is in the UI
-3. **Actionable fixes**: Provide concrete remediation steps
-4. **Complete code examples**: Show both failing and fixed code
-5. **Relevant MagentaA11y links**: Match to the issue type
-
-## Severity Mapping
-
-| axe Impact | Issue Severity | Priority |
-|------------|----------------|----------|
-| critical | Critical | Blocker |
-| serious | Severe | High |
-| moderate | Average | Medium |
-| minor | Low | Low |
-
-## Quick Reference: Common Issues
-
-| axe Rule | Template Available |
-|----------|-------------------|
-| `color-contrast` | Color contrast issue template |
-| `label` | Control lacks a label template |
-| `heading-order` | Heading levels incorrectly nested template |
-| `image-alt` | Image alternative text template |
-| `button-name` | Button name template |
-| `link-name` | Link name template |
-
-Use `get_issue_template(templateName: "color-contrast")` to retrieve pre-formatted issue templates, or `list_issue_templates()` to see all 28+ available templates.
+See the **a11y-issue-writer** skill documentation for details on issue formatting and templates.
 
 ## Optional: Enrich Results with MCP Servers
 
@@ -318,10 +285,8 @@ a11y-personas-mcp: get-personas(["blindness-screen-reader-nvda"])
 
 - Use Playwright browser tools (`mcp_playwright_browser_navigate` + `mcp_playwright_browser_evaluate`) to run axe-core
 - Axe-core is injected from CDN: `https://cdnjs.cloudflare.com/ajax/libs/axe-core/4.8.4/axe.min.js`
-- The `violations` array from axe results feeds into `format_axe_violation` from the accessibility-issues-template-mcp
-- The MCP provides 28 specialized templates covering common AxeCore rules plus a fallback for 100+ additional rules
-- Each failing element becomes a separate issue
+- **Two output modes**: Raw violations (default) or formatted issues (via delegation to a11y-issue-writer)
+- **Delegation model**: This skill runs tests and collects violations; a11y-issue-writer formats them as issues
 - Axe-core catches ~30-40% of issues; combine with manual review of `mcp_playwright_browser_snapshot` for comprehensive testing
-- **Always output a summary first**, then the detailed issues, then recommendations
-- **Fill in all template fields** - do not leave ###### placeholders in final output
-- **Group similar issues** when presenting (e.g., "Issues 3-8: Color Contrast in Footer Section")
+- **Always output a summary first**, then the violations/issues
+- When delegating to a11y-issue-writer, provide complete context (URL, browser, OS, violations array)

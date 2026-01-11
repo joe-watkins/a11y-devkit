@@ -83,6 +83,8 @@ This gives you a preliminary list of potential issues and builds context for wha
 3. Inject and run axe-core using `mcp_microsoft_pla_browser_evaluate`
 4. Collect the `violations` and `incomplete` arrays from results
 
+**Note:** The a11y-tester skill returns raw violations when called by the orchestrator. Issue formatting is handled separately by the a11y-issue-writer skill if needed.
+
 Automated testing catches issues static analysis cannot:
 - Computed accessible names
 - Actual color contrast with rendered colors
@@ -377,7 +379,8 @@ Identify framework (React, Vue, etc.) and adapt patterns accordingly.
 | Task | Skill | Key Information |
 |------|-------|-----------------|
 | Static code analysis | `web-standards` | HTML/ARIA/semantic issues |
-| Runtime testing | `a11y-tester` | axe-core violations |
+| Runtime testing | `a11y-tester` | axe-core violations (raw format) |
+| Format issues | `a11y-issue-writer` | Standardized issue reports from violations |
 | Generate fixes | `a11y-remediator` | Applies accessibility fixes |
 | Verify fixes | `a11y-validator` | Confirms issues resolved |
 | Base patterns | `a11y-base-web` | Foundational requirements |
@@ -395,3 +398,25 @@ For detailed reference data, query these MCP servers:
 | Issue templates | `accessibility-issues-template-mcp` | [github.com/joe-watkins/accessibility-issues-template-mcp](https://github.com/joe-watkins/accessibility-issues-template-mcp) | `format_axe_violation(...)`, `list_issue_templates()`, `get_issue_template(...)` |
 
 > **Philosophy:** Skills are "doers" — they perform actions. MCP servers are "resources" — they provide reference data. Skills query MCP servers when they need specifications or patterns.
+
+## Skills and MCP Integration
+
+### Skills (Actions)
+
+- **a11y-tester**: Runs axe-core tests and returns raw violations
+- **a11y-issue-writer**: Formats violations into standardized issue reports (uses accessibility-issues-template-mcp)
+- **a11y-remediator**: Applies fixes to code
+- **a11y-validator**: Validates fixes
+- **web-standards**: Performs static code analysis
+
+**Workflow:** a11y-tester collects violations → a11y-issue-writer formats them (optional) → a11y-remediator fixes them → a11y-validator confirms
+
+### MCP Servers (Resources)
+
+MCP servers provide reference data that skills query during execution:
+
+- **accessibility-issues-template-mcp**: Templates for formatting violations as issues (used by a11y-issue-writer)
+- **wcag-mcp**: WCAG success criteria and techniques
+- **aria-mcp**: ARIA roles, states, properties
+- **magentaa11y-mcp**: Component accessibility patterns
+- **a11y-personas-mcp**: User personas and impact information
