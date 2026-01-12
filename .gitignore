@@ -6,3 +6,6 @@
 .claude/
 .cursor/
 .cursorrules
+
+# Ignore Claude Code temp files
+tmpclaude-*-cwd
