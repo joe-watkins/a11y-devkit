@@ -1,6 +1,6 @@
-# A11y Skills
+# A11y Devkit
 
-A collection of accessibility-centric skills for AI agents and editors.
+A collection of accessibility-centric skills bundled with MCP (Model Context Protocol) servers for AI agents and editors.
 
 > **Note:** These skills are designed to work together in an orchestrated workflow and require MCP servers to provide reference data, but can also be used independently as needed. Each skill focuses on a specific aspect of accessibility auditing and remediation, allowing for modular use based on the task at hand. 
 
@@ -189,6 +189,21 @@ User: "Test this site for accessibility and write issues"
 This separation keeps testing logic separate from formatting logic, making skills more focused and reusable.
 
 ## Setup
+
+### Easiest: Use the CLI Tool
+
+The fastest way to set up these skills is using the npm CLI tool:
+
+```bash
+npx a11y-devkit-deploy
+```
+
+This interactive CLI will guide you through:
+- Selecting which IDE(s) to deploy to (Claude Code, Cursor, GitHub Copilot)
+- Choosing deployment options (copy, symlink, or setup with external resources)
+- Automatic installation to the correct IDE directories
+
+For more information, visit [a11y-devkit-deploy on npm](https://www.npmjs.com/package/a11y-devkit-deploy).
 
 ### Quick Start with Deployment Script
 
