@@ -35,6 +35,24 @@ For detailed reference data, query these MCP servers:
 
 > **Philosophy:** Skills are "doers" that perform actions. MCP servers are "resources" that provide reference data. Skills query MCP servers when they need specifications, patterns, or user impact data.
 
+## Setup
+
+### Easiest: Use the CLI Tool
+
+The fastest way to set up these skills is using the npm CLI tool:
+
+```bash
+npx a11y-devkit-deploy
+```
+
+This interactive CLI will guide you through:
+- Selecting which IDE(s) to deploy to (Claude Code, Cursor, GitHub Copilot)
+- Choosing deployment options (copy, symlink, or setup with external resources)
+- Automatic installation to the correct IDE directories
+
+For more information, visit [a11y-devkit-deploy on npm](https://www.npmjs.com/package/a11y-devkit-deploy).
+
+
 ## Prompt Examples
 
 ### Testing a Website for Accessibility
@@ -188,24 +206,7 @@ User: "Test this site for accessibility and write issues"
 
 This separation keeps testing logic separate from formatting logic, making skills more focused and reusable.
 
-## Setup
-
-### Easiest: Use the CLI Tool
-
-The fastest way to set up these skills is using the npm CLI tool:
-
-```bash
-npx a11y-devkit-deploy
-```
-
-This interactive CLI will guide you through:
-- Selecting which IDE(s) to deploy to (Claude Code, Cursor, GitHub Copilot)
-- Choosing deployment options (copy, symlink, or setup with external resources)
-- Automatic installation to the correct IDE directories
-
-For more information, visit [a11y-devkit-deploy on npm](https://www.npmjs.com/package/a11y-devkit-deploy).
-
-### Quick Start with Deployment Script
+### Setup with specific Deployment Scripts
 
 The easiest way to use these skills with your IDE is to use the deployment script:
 
