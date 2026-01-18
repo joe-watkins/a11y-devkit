@@ -1,0 +1,25 @@
+{
+  "name": "a11y-audit-fix-agent-orchestrator-skill",
+  "version": "1.0.0",
+  "description": "Coordinate full accessibility audit workflow across multiple skills",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joe-watkins/a11y-devkit.git",
+    "directory": "packages/a11y-audit-fix-agent-orchestrator"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "skill",
+    "orchestrator",
+    "audit",
+    "workflow"
+  ],
+  "files": [
+    "SKILL.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

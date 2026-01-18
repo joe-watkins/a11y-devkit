@@ -1,4 +1,0 @@
-[submodule "skills"]
-	path = skills
-	url = https://github.com/joe-watkins/a11y-skills
-	branch = main

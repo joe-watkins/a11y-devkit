@@ -1,0 +1,26 @@
+{
+  "name": "web-standards-skill",
+  "version": "1.0.0",
+  "description": "Static HTML/CSS/ARIA analysis without requiring a browser",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joe-watkins/a11y-devkit.git",
+    "directory": "packages/web-standards"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "skill",
+    "html",
+    "css",
+    "aria",
+    "static-analysis"
+  ],
+  "files": [
+    "SKILL.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

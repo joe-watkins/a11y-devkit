@@ -2,22 +2,56 @@
 
 A collection of accessibility-centric skills bundled with MCP (Model Context Protocol) servers for AI agents and editors.
 
-> **Note:** These skills are designed to work together in an orchestrated workflow and require MCP servers to provide reference data, but can also be used independently as needed. Each skill focuses on a specific aspect of accessibility auditing and remediation, allowing for modular use based on the task at hand. 
+> **Note:** These skills are designed to work together in an orchestrated workflow and require MCP servers to provide reference data, but can also be used independently as needed. Each skill focuses on a specific aspect of accessibility auditing and remediation, allowing for modular use based on the task at hand.
 
 This is experimental and evolving, so expect new skills to be added over time. The goal is to create a comprehensive toolkit for AI-driven accessibility improvements in development.
 
 ## Available Skills
 
-| Skill | Purpose | Path |
-|-------|---------|------|
-| a11y-audit-fix-agent-orchestrator | Coordinate full accessibility audit workflow across multiple skills | `a11y-audit-fix-agent-orchestrator/SKILL.md` |
-| a11y-base-web | Foundational accessibility patterns and requirements for AI-generated web code | `a11y-base-web/SKILL.md` |
-| a11y-issue-writer | Format axe-core violations into standardized JIRA-ready issue reports | `a11y-issue-writer/SKILL.md` |
-| a11y-remediator | Generate accessibility fixes for identified issues | `a11y-remediator/SKILL.md` |
-| a11y-tester | Automated WCAG testing with axe-core (outputs raw violations or delegates formatting) | `a11y-tester/SKILL.md` |
-| a11y-validator | Verify that accessibility fixes resolve identified issues | `a11y-validator/SKILL.md` |
-| skill-creator | Guide for creating new skills | `skill-creator/SKILL.md` |
-| web-standards | Static HTML/CSS/ARIA analysis without requiring a browser | `web-standards/SKILL.md` |
+| Skill | npm Package | Purpose |
+|-------|-------------|---------|
+| a11y-audit-fix-agent-orchestrator | `a11y-audit-fix-agent-orchestrator-skill` | Coordinate full accessibility audit workflow across multiple skills |
+| a11y-base-web | `a11y-base-web-skill` | Foundational accessibility patterns and requirements for AI-generated web code |
+| a11y-issue-writer | `a11y-issue-writer-skill` | Format axe-core violations into standardized JIRA-ready issue reports |
+| a11y-remediator | `a11y-remediator-skill` | Generate accessibility fixes for identified issues |
+| a11y-tester | `a11y-tester-skill` | Automated WCAG testing with axe-core (outputs raw violations or delegates formatting) |
+| a11y-validator | `a11y-validator-skill` | Verify that accessibility fixes resolve identified issues |
+| skill-creator | `skill-creator-skill` | Guide for creating new skills |
+| web-standards | `web-standards-skill` | Static HTML/CSS/ARIA analysis without requiring a browser |
+
+## Installation
+
+### Easiest: Use the CLI Tool
+
+The fastest way to set up these skills is using the npm CLI tool:
+
+```bash
+npx a11y-devkit-deploy
+```
+
+This interactive CLI will guide you through:
+- Selecting which IDE(s) to deploy to (Claude Code, Cursor, GitHub Copilot)
+- Choosing deployment options
+- Automatic installation to the correct IDE directories
+
+For more information, visit [a11y-devkit-deploy on npm](https://www.npmjs.com/package/a11y-devkit-deploy).
+
+### Install Individual Skills via npm
+
+You can also install skills individually:
+
+```bash
+npm install a11y-tester-skill
+npm install a11y-issue-writer-skill
+npm install a11y-remediator-skill
+# etc.
+```
+
+### Install All Skills
+
+```bash
+npm install a11y-base-web-skill a11y-issue-writer-skill a11y-tester-skill a11y-remediator-skill a11y-validator-skill web-standards-skill a11y-audit-fix-agent-orchestrator-skill skill-creator-skill
+```
 
 ## MCP Dependencies (Separate Repositories)
 
@@ -34,24 +68,6 @@ For detailed reference data, query these MCP servers:
 | accessibility-issues-template-mcp | Format AxeCore violations into standardized JIRA-ready issue templates | [github.com/joe-watkins/accessibility-issues-template-mcp](https://github.com/joe-watkins/accessibility-issues-template-mcp) |
 
 > **Philosophy:** Skills are "doers" that perform actions. MCP servers are "resources" that provide reference data. Skills query MCP servers when they need specifications, patterns, or user impact data.
-
-## Setup
-
-### Easiest: Use the CLI Tool
-
-The fastest way to set up these skills is using the npm CLI tool:
-
-```bash
-npx a11y-devkit-deploy
-```
-
-This interactive CLI will guide you through:
-- Selecting which IDE(s) to deploy to (Claude Code, Cursor, GitHub Copilot)
-- Choosing deployment options (copy, symlink, or setup with external resources)
-- Automatic installation to the correct IDE directories
-
-For more information, visit [a11y-devkit-deploy on npm](https://www.npmjs.com/package/a11y-devkit-deploy).
-
 
 ## Prompt Examples
 
@@ -96,7 +112,6 @@ This prompt would trigger a comprehensive accessibility workflow using multiple 
    - Validates that the site meets target WCAG conformance level
 
 The orchestrator skill manages this entire pipeline, ensuring comprehensive testing and remediation.
-
 
 ## Orchestrated Workflow
 
@@ -206,53 +221,34 @@ User: "Test this site for accessibility and write issues"
 
 This separation keeps testing logic separate from formatting logic, making skills more focused and reusable.
 
-### Setup with specific Deployment Scripts
+## IDE-Specific Directories
 
-The easiest way to use these skills with your IDE is to use the deployment script:
-
-```bash
-# Deploy to all IDEs (Claude Code, Cursor, GitHub Copilot)
-./deploy-skills.sh --all
-
-# Deploy to specific IDE
-./deploy-skills.sh --claude
-./deploy-skills.sh --cursor
-./deploy-skills.sh --github
-
-# Deploy with automatic setup (downloads external resources)
-./deploy-skills.sh --all --setup
-
-# Deploy with symlinks (for development - changes sync automatically)
-./deploy-skills.sh --all --symlink
-
-# List all available skills
-./deploy-skills.sh --list
-
-# Clean up IDE deployments
-./deploy-skills.sh --clean
-```
-
-The deployment script automatically:
-- Copies skills to IDE-specific directories (`.claude/skills/`, `.cursor/skills/`, `.github/skills/`)
-- Ensures compatibility with all IDE implementations
-- Optionally runs setup scripts to download external reference data
-
-### IDE-Specific Directories
-
-After running the deployment script, skills will be available in:
+After installation, skills will be available in:
 
 - **Claude Code**: `.claude/skills/` directory
 - **Cursor**: `.cursor/skills` directory
 - **GitHub Copilot**: `.github/skills/` directory
 
-> The deployment script copies files by default for maximum compatibility. Use `--symlink` flag if you prefer symlinks (changes to source skills are immediately reflected, but may not work with all IDEs).
+## Development
 
-### Manual Setup (Alternative)
+This repository uses npm workspaces to manage multiple skill packages.
 
-If you prefer manual setup, clone this repository into your IDE's skills folder:
+### Setup
 
-- **Claude Code**: Clone/symlink into `.claude/skills/`
-- **Cursor**: Clone/symlink into `.cursor/skills/`
-- **GitHub Copilot**: Clone/symlink into `.github/skills/` (or use `.github/copilot-instructions.md`)
+```bash
+npm install
+```
 
-Each skill folder contains a `SKILL.md` file with instructions, reference data, and any associated scripts.
+### Publishing
+
+```bash
+# Bump versions
+npm version patch --workspaces
+
+# Publish all packages
+npm publish --workspaces --access public
+```
+
+## License
+
+MIT

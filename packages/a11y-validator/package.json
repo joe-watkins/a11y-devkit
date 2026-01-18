@@ -1,0 +1,24 @@
+{
+  "name": "a11y-validator-skill",
+  "version": "1.0.0",
+  "description": "Verify that accessibility fixes resolve identified issues",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joe-watkins/a11y-devkit.git",
+    "directory": "packages/a11y-validator"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "skill",
+    "validation",
+    "testing"
+  ],
+  "files": [
+    "SKILL.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
