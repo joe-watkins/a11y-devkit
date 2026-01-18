@@ -1,6 +1,6 @@
 {
   "name": "a11y-audit-fix-agent-orchestrator-skill",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Coordinate full accessibility audit workflow across multiple skills",
   "license": "MIT",
   "repository": {
