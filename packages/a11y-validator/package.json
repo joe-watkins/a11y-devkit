@@ -1,6 +1,6 @@
 {
   "name": "a11y-validator-skill",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Verify that accessibility fixes resolve identified issues",
   "license": "MIT",
   "repository": {
