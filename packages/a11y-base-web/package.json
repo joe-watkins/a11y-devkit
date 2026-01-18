@@ -1,0 +1,25 @@
+{
+  "name": "a11y-base-web-skill",
+  "version": "1.0.0",
+  "description": "Foundational accessibility patterns and requirements for AI-generated web code",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joe-watkins/a11y-devkit.git",
+    "directory": "packages/a11y-base-web"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "skill",
+    "wcag",
+    "aria",
+    "semantic-html"
+  ],
+  "files": [
+    "SKILL.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

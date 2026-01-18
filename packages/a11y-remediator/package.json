@@ -1,0 +1,25 @@
+{
+  "name": "a11y-remediator-skill",
+  "version": "1.0.0",
+  "description": "Generate accessibility fixes for identified issues using MCP servers",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joe-watkins/a11y-devkit.git",
+    "directory": "packages/a11y-remediator"
+  },
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "skill",
+    "remediation",
+    "wcag",
+    "aria"
+  ],
+  "files": [
+    "SKILL.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

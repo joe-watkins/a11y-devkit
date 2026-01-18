@@ -15,6 +15,7 @@ NC='\033[0m' # No Color
 
 # Get script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PACKAGES_DIR="$SCRIPT_DIR/packages"
 cd "$SCRIPT_DIR"
 
 # IDE target directories
@@ -125,12 +126,12 @@ parse_args() {
     fi
 }
 
-# Find all skills (directories with SKILL.md)
+# Find all skills (directories with SKILL.md in packages/)
 find_skills() {
     local skills=()
-    for dir in */; do
-        dir=${dir%/}  # Remove trailing slash
-        if [ -f "$dir/SKILL.md" ]; then
+    for dir in "$PACKAGES_DIR"/*/; do
+        dir=$(basename "${dir%/}")  # Get just the directory name
+        if [ -f "$PACKAGES_DIR/$dir/SKILL.md" ]; then
             skills+=("$dir")
         fi
     done
@@ -145,7 +146,7 @@ list_skills() {
     local skills=($(find_skills))
     for skill in "${skills[@]}"; do
         local has_setup=""
-        if [ -f "$skill/setup.sh" ]; then
+        if [ -f "$PACKAGES_DIR/$skill/setup.sh" ]; then
             has_setup=" ${GREEN}[setup]${NC}"
         fi
         echo -e "  • ${YELLOW}$skill${NC}$has_setup"
@@ -169,7 +170,7 @@ deploy_skill() {
     local skill=$1
     local target_dir=$2
     local skill_target="$target_dir/$skill"
-    local skill_source="$SCRIPT_DIR/$skill"
+    local skill_source="$PACKAGES_DIR/$skill"
 
     # Remove existing symlink or directory
     if [ -L "$skill_target" ] || [ -d "$skill_target" ]; then
@@ -178,7 +179,7 @@ deploy_skill() {
 
     if [ "$DEPLOY_MODE" = "symlink" ]; then
         # Create relative symlink
-        local relative_path="../../$skill"
+        local relative_path="../../packages/$skill"
         ln -s "$relative_path" "$skill_target"
         echo -e "  ${GREEN}→${NC} Symlinked $skill"
     else
@@ -191,11 +192,11 @@ deploy_skill() {
 # Run setup script for a skill
 run_skill_setup() {
     local skill=$1
-    local setup_script="$skill/setup.sh"
+    local setup_script="$PACKAGES_DIR/$skill/setup.sh"
 
     if [ -f "$setup_script" ]; then
         echo -e "  ${BLUE}⚙${NC}  Running setup for $skill..."
-        (cd "$skill" && bash setup.sh)
+        (cd "$PACKAGES_DIR/$skill" && bash setup.sh)
         echo -e "  ${GREEN}✓${NC} Setup complete for $skill"
     fi
 }
@@ -246,7 +247,7 @@ clean_deployments() {
 # Validate Python is available for validation (optional)
 check_validation_tools() {
     if command -v python3 &> /dev/null; then
-        local validator="$SCRIPT_DIR/skill-creator/scripts/quick_validate.py"
+        local validator="$PACKAGES_DIR/skill-creator/scripts/quick_validate.py"
         if [ -f "$validator" ]; then
             return 0
         fi
@@ -304,7 +305,7 @@ main() {
         local has_setup_skills=false
         local skills=($(find_skills))
         for skill in "${skills[@]}"; do
-            if [ -f "$skill/setup.sh" ]; then
+            if [ -f "$PACKAGES_DIR/$skill/setup.sh" ]; then
                 has_setup_skills=true
                 break
             fi

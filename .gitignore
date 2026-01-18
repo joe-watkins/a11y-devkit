@@ -1,3 +1,6 @@
+# Dependencies
+node_modules/
+
 # Cloned skill repositories
 /*/repo/
 
@@ -9,3 +12,6 @@
 
 # Ignore Claude Code temp files
 tmpclaude-*-cwd
+
+# Anthropic Skill creator copy
+/packages/skill-creator
