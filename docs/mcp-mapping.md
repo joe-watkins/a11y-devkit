@@ -27,7 +27,7 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
     - `validate-role-attributes("button", ["aria-pressed"])`
     - `get-required-attributes("dialog")` *(or equivalent in your server)*
 
-- **wcag-mcp** *(repo docs currently call it `wcag-mcp`)*
+- **wcag-guidelines-mcp** *(repo docs currently call it `wcag-guidelines-mcp`)*
   - Purpose: WCAG success criteria + techniques lookup for grounding and ticket writing
   - Common tools:
     - `get-criterion("4.1.2")`
@@ -61,13 +61,13 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 
 - MCP required: **none** (guidance-only)
 - MCP optional (if you want grounded citations / deeper lookups):
-  - `wcag-mcp`, `aria-mcp`, `magentaa11y-mcp`
+  - `wcag-guidelines-mcp`, `aria-mcp`, `magentaa11y-mcp`
 
 ### 2) `web-standards` (Role: Web Standards + Best Practices)
 
 - MCP required:
   - `aria-mcp`
-  - `wcag-mcp`
+  - `wcag-guidelines-mcp`
 - MCP optional:
   - `magentaa11y-mcp` (for “recommended implementation pattern”)
 
@@ -76,7 +76,7 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 - MCP required:
   - Playwright MCP (`mcp_playwright_browser_*`) for navigation/evaluate/snapshot
 - MCP optional (enrichment):
-  - `wcag-mcp` (SC grounding)
+  - `wcag-guidelines-mcp` (SC grounding)
   - `magentaa11y-mcp` (recommended patterns)
   - `a11y-personas-mcp` (impact)
   - `accessibility-issues-template-mcp` (if generating tickets)
@@ -86,7 +86,7 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 - MCP required:
   - `accessibility-issues-template-mcp`
 - MCP optional:
-  - `wcag-mcp` (SC details/techniques)
+  - `wcag-guidelines-mcp` (SC details/techniques)
   - `a11y-personas-mcp` (impact language)
 
 ### 5) `a11y-remediator` (Role: Remediation / Coder)
@@ -94,7 +94,7 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 - MCP optional-but-recommended (for grounded fixes):
   - `magentaa11y-mcp` (patterns/criteria)
   - `aria-mcp` (valid ARIA)
-  - `wcag-mcp` (SC + techniques)
+  - `wcag-guidelines-mcp` (SC + techniques)
   - `a11y-personas-mcp` (impact)
 
 ### 6) `a11y-validator` (Role: Validation / “did we actually fix it?”)
@@ -103,7 +103,7 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
   - `magentaa11y-mcp` (acceptance criteria checklists)
 - MCP optional:
   - `a11y-tester` runtime (re-test loop)
-  - `wcag-mcp`, `aria-mcp` (grounding)
+  - `wcag-guidelines-mcp`, `aria-mcp` (grounding)
 
 ### 7) `a11y-audit-fix-agent-orchestrator` (Role: Orchestration)
 
@@ -113,7 +113,7 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
   - `a11y-personas-mcp`
   - `magentaa11y-mcp`
   - `aria-mcp`
-  - `wcag-mcp`
+  - `wcag-guidelines-mcp`
   - `accessibility-issues-template-mcp`
 
 ## Naming note (important)
@@ -125,7 +125,7 @@ Joe’s note includes these npm packages:
 - `aria-mcp`
 - `wcag-guidelines-mcp`
 
-This repo’s current docs mention **`wcag-mcp`** and **`accessibility-issues-template-mcp`**. If `wcag-guidelines-mcp` and/or `arc-issues-mcp` are the new canonical packages, we should:
+This repo’s current docs mention **`wcag-guidelines-mcp`** and **`accessibility-issues-template-mcp`**. If `wcag-guidelines-mcp` and/or `arc-issues-mcp` are the new canonical packages, we should:
 1) decide the canonical names, then
 2) update SKILL docs + README to match, and
 3) add a short “migration / alias” section so users don’t get stuck.

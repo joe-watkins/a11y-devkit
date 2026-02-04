@@ -11,7 +11,7 @@ Format accessibility violations into standardized issue reports using the access
 
 ## MCP dependencies
 - **Required:** `accessibility-issues-template-mcp`
-- **Optional:** `wcag-mcp` (SC grounding), `a11y-personas-mcp` (impact language)
+- **Optional:** `wcag-guidelines-mcp` (SC grounding), `a11y-personas-mcp` (impact language)
 
 ## Prerequisites
 

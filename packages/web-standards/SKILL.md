@@ -1,6 +1,6 @@
 ---
 name: web-standards
-description: Static HTML/CSS/ARIA analysis without requiring a browser. Use this skill when analyzing code for semantic HTML issues, ARIA validity, landmark structure, heading hierarchy, form labeling, or any accessibility problems detectable from source code. Queries aria-mcp for ARIA rules and wcag-mcp for success criteria mapping. Part of the a11y-orchestrator workflow.
+description: Static HTML/CSS/ARIA analysis without requiring a browser. Use this skill when analyzing code for semantic HTML issues, ARIA validity, landmark structure, heading hierarchy, form labeling, or any accessibility problems detectable from source code. Queries aria-mcp for ARIA rules and wcag-guidelines-mcp for success criteria mapping. Part of the a11y-orchestrator workflow.
 ---
 
 # Web Standards Analyzer
@@ -10,7 +10,7 @@ description: Static HTML/CSS/ARIA analysis without requiring a browser. Use this
 Static accessibility analysis of HTML, CSS, and ARIA without browser execution.
 
 ## MCP dependencies
-- **Required:** `aria-mcp`, `wcag-mcp`
+- **Required:** `aria-mcp`, `wcag-guidelines-mcp`
 - **Optional:** `magentaa11y-mcp` (preferred implementation patterns)
 
 ## Analysis Categories
@@ -92,7 +92,7 @@ Verify heading structure:
 3. Headings should reflect content hierarchy
 4. Visual headings should be semantic headings
 
-**Query wcag-mcp:** `get-criterion("1.3.1")` for Info and Relationships
+**Query wcag-guidelines-mcp:** `get-criterion("1.3.1")` for Info and Relationships
 
 ### 5. Form Accessibility
 
@@ -125,7 +125,7 @@ Check all images and graphics:
 | `<svg>`             | Has accessible name or `aria-hidden` | SVG not labeled or hidden           |
 | Icon fonts          | Has text alternative                 | Icon-only with no text              |
 
-**Query wcag-mcp:** `get-criterion("1.1.1")` for Non-text Content
+**Query wcag-guidelines-mcp:** `get-criterion("1.1.1")` for Non-text Content
 
 ### 7. Keyboard Accessibility
 
@@ -138,7 +138,7 @@ Static checks for keyboard support:
 | `onclick` without keyboard handler | Mouse-only interaction               |
 | Non-focusable interactive          | Custom widget without `tabindex="0"` |
 
-**Query wcag-mcp:** `get-criterion("2.1.1")` for Keyboard
+**Query wcag-guidelines-mcp:** `get-criterion("2.1.1")` for Keyboard
 
 ### 8. Text and Contrast (CSS)
 
@@ -151,7 +151,7 @@ Check CSS for potential issues:
 | Fixed font sizes    | May prevent text resize    |
 | `user-select: none` | May prevent text selection |
 
-**Query wcag-mcp:** `get-criterion("2.4.7")` for Focus Visible, `get-criterion("1.4.4")` for Resize Text
+**Query wcag-guidelines-mcp:** `get-criterion("2.4.7")` for Focus Visible, `get-criterion("1.4.4")` for Resize Text
 
 ## Output Format
 
@@ -167,7 +167,7 @@ Found X accessibility issues:
 - **Location:** [file:line or element path]
 - **Category:** [Semantic HTML/ARIA/Landmarks/etc.]
 - **Severity:** [Critical/Serious/Moderate/Minor]
-- **WCAG:** [Success criterion from wcag-mcp]
+- **WCAG:** [Success criterion from wcag-guidelines-mcp]
 - **Code:**
 
 ```html
@@ -195,5 +195,5 @@ When you encounter these situations, query the referenced MCP server:
 | Situation              | Query MCP         | Example Tool                             |
 | ---------------------- | ----------------- | ---------------------------------------- |
 | Custom ARIA widget     | `aria-mcp`        | `get-required-attributes("dialog")`      |
-| WCAG criterion details | `wcag-mcp`        | `get-techniques-for-criterion("1.3.1")`  |
+| WCAG criterion details | `wcag-guidelines-mcp`        | `get-techniques-for-criterion("1.3.1")`  |
 | Correct implementation | `magentaa11y-mcp` | `get_component_developer_notes("modal")` |

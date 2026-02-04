@@ -11,7 +11,7 @@ Baseline accessibility patterns and requirements for technologies that render HT
 
 ## MCP dependencies
 - **Required:** none
-- **Optional (grounding / citations):** `wcag-mcp`, `aria-mcp`, `magentaa11y-mcp`
+- **Optional (grounding / citations):** `wcag-guidelines-mcp`, `aria-mcp`, `magentaa11y-mcp`
 
 ### LLM Behavior and Tone Requirements
 In addition to producing accessible code, the assistant must also demonstrate respectful and bias-aware behavior in accessibility contexts. All generated output must follow these principles:

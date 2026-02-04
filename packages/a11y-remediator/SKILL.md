@@ -1,6 +1,6 @@
 ---
 name: a11y-remediator
-description: Generate accessibility fixes for identified issues using MCP servers for component patterns (magentaa11y-mcp), ARIA guidance (aria-mcp), WCAG criteria (wcag-mcp), and user impact (a11y-personas-mcp). Use this skill when you have a list of accessibility issues and need to produce corrected code with full context. Part of the a11y-orchestrator workflow.
+description: Generate accessibility fixes for identified issues using MCP servers for component patterns (magentaa11y-mcp), ARIA guidance (aria-mcp), WCAG criteria (wcag-guidelines-mcp), and user impact (a11y-personas-mcp). Use this skill when you have a list of accessibility issues and need to produce corrected code with full context. Part of the a11y-orchestrator workflow.
 ---
 
 # Accessibility Remediator
@@ -10,7 +10,7 @@ description: Generate accessibility fixes for identified issues using MCP server
 Generates fixes for accessibility issues by querying MCP servers for authoritative guidance.
 
 ## MCP dependencies
-- **Recommended:** `magentaa11y-mcp`, `aria-mcp`, `wcag-mcp`, `a11y-personas-mcp`
+- **Recommended:** `magentaa11y-mcp`, `aria-mcp`, `wcag-guidelines-mcp`, `a11y-personas-mcp`
 - **Optional:** none
 
 ## Critical Constraint: Fix What Exists
@@ -41,7 +41,7 @@ For each accessibility issue:
    - `get-role("button")` → Returns role requirements
    - `validate-role-attributes("button", ["aria-pressed"])` → Validates ARIA usage
    - `get-required-attributes("button")` → Returns required attributes
-4. **Map to WCAG** — query `wcag-mcp` for success criterion:
+4. **Map to WCAG** — query `wcag-guidelines-mcp` for success criterion:
    - `get-criterion("4.1.2")` → Returns SC details and understanding docs
    - `get-techniques-for-criterion("4.1.2")` → Returns implementation techniques
 5. **Document impact** — query `a11y-personas-mcp` for affected users:
@@ -69,7 +69,7 @@ For each accessibility issue:
 <input id="email" type="email">
 ```
 
-**WCAG:** 4.1.2 Name, Role, Value — query `wcag-mcp`: `get-criterion("4.1.2")`
+**WCAG:** 4.1.2 Name, Role, Value — query `wcag-guidelines-mcp`: `get-criterion("4.1.2")`
 
 ### Fake Interactive Elements
 
@@ -152,7 +152,7 @@ For each accessibility issue:
 
 **Pattern:** Skipped levels or non-semantic headings
 
-**Query wcag-mcp:** `get-criterion("1.3.1")` for heading requirements
+**Query wcag-guidelines-mcp:** `get-criterion("1.3.1")` for heading requirements
 
 **Fix approaches:**
 ```html
@@ -221,7 +221,7 @@ For each accessibility issue:
 
 **Pattern:** Focus indicator removed or insufficient
 
-**Query wcag-mcp:** `get-criterion("2.4.7")` for Focus Visible requirements
+**Query wcag-guidelines-mcp:** `get-criterion("2.4.7")` for Focus Visible requirements
 
 **Fix approaches:**
 ```css

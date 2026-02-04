@@ -11,7 +11,7 @@ Confirms that generated fixes resolve accessibility issues.
 
 ## MCP dependencies
 - **Required:** `magentaa11y-mcp`
-- **Optional:** Playwright MCP via `a11y-tester` (runtime re-test), plus `aria-mcp` / `wcag-mcp` for grounding
+- **Optional:** Playwright MCP via `a11y-tester` (runtime re-test), plus `aria-mcp` / `wcag-guidelines-mcp` for grounding
 
 ## Validation Workflow
 

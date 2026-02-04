@@ -63,7 +63,7 @@ For detailed reference data, query these MCP servers:
 
 | Resource | Purpose | Repository |
 |----------|---------|------------|
-| wcag-mcp | WCAG 2.2 guidelines, success criteria, techniques | [github.com/joe-watkins/wcag-mcp](https://github.com/joe-watkins/wcag-mcp) |
+| wcag-guidelines-mcp | WCAG 2.2 guidelines, success criteria, techniques | [github.com/joe-watkins/wcag-guidelines-mcp](https://github.com/joe-watkins/wcag-guidelines-mcp) |
 | aria-mcp | WAI-ARIA roles, states, properties, patterns | [github.com/joe-watkins/aria-mcp](https://github.com/joe-watkins/aria-mcp) |
 | magentaa11y-mcp | Component accessibility acceptance criteria | [github.com/joe-watkins/magentaa11y-mcp](https://github.com/joe-watkins/magentaa11y-mcp) |
 | a11y-personas-mcp | Accessibility personas for diverse user needs | [github.com/joe-watkins/a11y-personas-mcp](https://github.com/joe-watkins/a11y-personas-mcp) |
@@ -134,11 +134,11 @@ The `a11y-audit-fix-agent-orchestrator` coordinates a 3-stage workflow where ski
 │  web-standards ──────► Static HTML/ARIA analysis                            │
 │       │                                                                     │
 │       ├── aria-mcp: validate-role-attributes(), get-required-attributes()  │
-│       └── wcag-mcp: get-criterion() for WCAG mapping                        │
+│       └── wcag-guidelines-mcp: get-criterion() for WCAG mapping                        │
 │                                                                             │
 │  a11y-tester ────────► Runtime axe-core testing (returns raw violations)    │
 │       │                                                                     │
-│       ├── wcag-mcp: enrich violations with SC details                       │
+│       ├── wcag-guidelines-mcp: enrich violations with SC details                       │
 │       └── a11y-personas-mcp: identify affected user groups                  │
 │                                                                             │
 │  a11y-issue-writer ──► (Optional) Format violations as standardized issues  │
@@ -154,7 +154,7 @@ The `a11y-audit-fix-agent-orchestrator` coordinates a 3-stage workflow where ski
 │       │                                                                     │
 │       ├── magentaa11y-mcp: get_web_component() for correct patterns         │
 │       ├── aria-mcp: get-role(), validate-role-attributes()                  │
-│       ├── wcag-mcp: get-techniques-for-criterion()                          │
+│       ├── wcag-guidelines-mcp: get-techniques-for-criterion()                          │
 │       └── a11y-personas-mcp: get-personas() for user impact                 │
 └─────────────────────────────────────────────────────────────────────────────┘
                                     │
@@ -179,7 +179,7 @@ The `a11y-audit-fix-agent-orchestrator` coordinates a 3-stage workflow where ski
 2. a11y-remediator generates fix:
    ├── Queries magentaa11y-mcp: get_web_component("button") → gets pattern
    ├── Queries aria-mcp: get-required-attributes("button") → validates ARIA
-   ├── Queries wcag-mcp: get-criterion("4.1.2") → maps to WCAG SC
+   ├── Queries wcag-guidelines-mcp: get-criterion("4.1.2") → maps to WCAG SC
    └── Queries a11y-personas-mcp: get-personas([...]) → documents impact
 
 3. a11y-validator confirms:

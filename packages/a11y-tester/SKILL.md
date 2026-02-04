@@ -11,7 +11,7 @@ Run automated accessibility testing using axe-core and output violations in raw 
 
 ## MCP dependencies
 - **Required:** Playwright MCP (`mcp_playwright_browser_navigate`, `mcp_playwright_browser_evaluate`, `mcp_playwright_browser_snapshot`)
-- **Optional (enrichment):** `wcag-mcp`, `magentaa11y-mcp`, `a11y-personas-mcp`, `accessibility-issues-template-mcp`
+- **Optional (enrichment):** `wcag-guidelines-mcp`, `magentaa11y-mcp`, `a11y-personas-mcp`, `accessibility-issues-template-mcp`
 
 ## Prerequisites: Playwright MCP Setup
 
@@ -269,9 +269,9 @@ See the **a11y-issue-writer** skill documentation for details on issue formattin
 
 After running axe-core tests, you can enrich results by querying accessibility MCP servers:
 
-### WCAG Mapping (wcag-mcp)
+### WCAG Mapping (wcag-guidelines-mcp)
 ```
-wcag-mcp: get-criterion("4.1.2")
+wcag-guidelines-mcp: get-criterion("4.1.2")
 → Returns full SC details, understanding docs, techniques
 ```
 

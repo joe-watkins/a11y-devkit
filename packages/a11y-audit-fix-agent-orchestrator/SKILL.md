@@ -11,7 +11,7 @@ Coordinates the complete accessibility audit workflow by directing AI to use spe
 
 ## MCP dependencies
 - **Required (runtime):** a browser automation MCP (Playwright MCP or Microsoft PLA MCP)
-- **Optional (grounding / decision support):** `magentaa11y-mcp`, `aria-mcp`, `wcag-mcp`, `a11y-personas-mcp`, `accessibility-issues-template-mcp`
+- **Optional (grounding / decision support):** `magentaa11y-mcp`, `aria-mcp`, `wcag-guidelines-mcp`, `a11y-personas-mcp`, `accessibility-issues-template-mcp`
 
 ## Execution model (recommended)
 
@@ -396,7 +396,7 @@ For detailed reference data, query these MCP servers:
 
 | Resource | MCP Server | Repository | Example Tools |
 |----------|------------|------------|---------------|
-| WCAG guidelines | `wcag-mcp` | [github.com/joe-watkins/wcag-mcp](https://github.com/joe-watkins/wcag-mcp) | `get-criterion("4.1.2")`, `get-techniques-for-criterion("1.3.1")` |
+| WCAG guidelines | `wcag-guidelines-mcp` | [github.com/joe-watkins/wcag-guidelines-mcp](https://github.com/joe-watkins/wcag-guidelines-mcp) | `get-criterion("4.1.2")`, `get-techniques-for-criterion("1.3.1")` |
 | ARIA specs | `aria-mcp` | [github.com/joe-watkins/aria-mcp](https://github.com/joe-watkins/aria-mcp) | `get-role("button")`, `validate-role-attributes(...)` |
 | Component patterns | `magentaa11y-mcp` | [github.com/joe-watkins/magentaa11y-mcp](https://github.com/joe-watkins/magentaa11y-mcp) | `get_web_component("button")`, `get_component_developer_notes("modal")` |
 | User personas | `a11y-personas-mcp` | [github.com/joe-watkins/a11y-personas-mcp](https://github.com/joe-watkins/a11y-personas-mcp) | `list-personas()`, `get-personas(["blindness-screen-reader-nvda"])` |
@@ -421,7 +421,7 @@ For detailed reference data, query these MCP servers:
 MCP servers provide reference data that skills query during execution:
 
 - **accessibility-issues-template-mcp**: Templates for formatting violations as issues (used by a11y-issue-writer)
-- **wcag-mcp**: WCAG success criteria and techniques
+- **wcag-guidelines-mcp**: WCAG success criteria and techniques
 - **aria-mcp**: ARIA roles, states, properties
 - **magentaa11y-mcp**: Component accessibility patterns
 - **a11y-personas-mcp**: User personas and impact information
