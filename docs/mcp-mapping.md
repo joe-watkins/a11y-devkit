@@ -22,10 +22,17 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 
 - **aria-mcp** (npm: `aria-mcp`)
   - Purpose: authoritative ARIA role/state/property validation and lookups
-  - Common tools:
+  - Common tools (from repo):
     - `get-role("button")`
-    - `validate-role-attributes("button", ["aria-pressed"])`
-    - `get-required-attributes("dialog")` *(or equivalent in your server)*
+    - `list-roles()` / `search-roles("combobox")`
+    - `get-attribute("aria-expanded")`
+    - `get-global-attributes()`
+    - `validate-role-attributes(role="button", attributes=["aria-pressed","aria-expanded","aria-label"])`
+    - `get-required-attributes("dialog")`
+    - `get-prohibited-attributes("button")`
+    - `check-name-requirements("button")`
+    - `list-landmarks()` / `list-widget-roles()` / `list-live-regions()`
+    - `suggest-role("dropdown menu with autocomplete")`
 
 - **wcag-guidelines-mcp** (npm: `wcag-guidelines-mcp`)
   - Purpose: WCAG success criteria + techniques + Understanding documentation lookup for grounding and ticket writing
