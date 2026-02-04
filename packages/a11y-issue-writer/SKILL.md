@@ -5,7 +5,13 @@ description: Format accessibility violations into standardized, JIRA-ready issue
 
 # Accessibility Issue Writer
 
+**Role:** Writes detailed accessibility issues based on audits
+
 Format accessibility violations into standardized issue reports using the accessibility-issues-template-mcp.
+
+## MCP dependencies
+- **Required:** `accessibility-issues-template-mcp`
+- **Optional:** `wcag-mcp` (SC grounding), `a11y-personas-mcp` (impact language)
 
 ## Prerequisites
 

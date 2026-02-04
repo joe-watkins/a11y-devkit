@@ -5,7 +5,13 @@ description: Generate accessibility fixes for identified issues using MCP server
 
 # Accessibility Remediator
 
+**Role:** Fixes accessibility issues in content (Coder / Remediation)
+
 Generates fixes for accessibility issues by querying MCP servers for authoritative guidance.
+
+## MCP dependencies
+- **Recommended:** `magentaa11y-mcp`, `aria-mcp`, `wcag-mcp`, `a11y-personas-mcp`
+- **Optional:** none
 
 ## Critical Constraint: Fix What Exists
 

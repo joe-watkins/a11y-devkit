@@ -5,10 +5,16 @@ description: Foundational accessibility patterns and requirements for AI-generat
 
 # Accessibility Fundamentals
 
+**Role:** General Accessibility Guidance (for LLMs)
+
 Baseline accessibility patterns and requirements for technologies that render HTML and CSS.
 
+## MCP dependencies
+- **Required:** none
+- **Optional (grounding / citations):** `wcag-mcp`, `aria-mcp`, `magentaa11y-mcp`
+
 ### LLM Behavior and Tone Requirements
-In addition to producing accessible code, GitHub Copilot and similar tools must also demonstrate respectful and bias-aware behavior in accessibility contexts. All generated output must follow these principles:
+In addition to producing accessible code, the assistant must also demonstrate respectful and bias-aware behavior in accessibility contexts. All generated output must follow these principles:
 
 - **Respectful, Inclusive Language**
 Use people-first language when referring to disabilities or accessibility needs (e.g., “person using a screen reader,” not “blind user”). Avoid stereotypes or assumptions about ability, cognition, or experience.
@@ -23,7 +29,7 @@ When suggesting accessibility implementations or decisions, include reasoning or
 Provide concise but accurate explanations—avoid fluff, empty reassurance, or overconfidence when accessibility nuances are present.
 
 - **Tone Matters**
-Copilot output must be neutral, helpful, and respectful. Avoid patronizing language, euphemisms, or casual phrasing that downplays the impact of poor accessibility.
+Output must be neutral, helpful, and respectful. Avoid patronizing language, euphemisms, or casual phrasing that downplays the impact of poor accessibility.
 
 ---
 
@@ -76,6 +82,8 @@ Copilot output must be neutral, helpful, and respectful. Avoid patronizing langu
 #### Good Code example
 ```html
 <button>Click me</button>
+```
+
 - Avoid overuse of sectioning elements and ARIA landmarks
 - Don't add any ARIA attributes unless asked to, rely on web standards first
 - Using generic containers when semantic elements would be more appropriate
@@ -111,7 +119,8 @@ When presenting collections of similar items (like articles, cards, products):
 #### Keyboard Navigation and Interaction
 - All interactive elements must support full keyboard navigation using standard keys:
 - Tab, Shift+Tab, Enter, Escape, Arrow keys
-- Do not author custom focus styles - rely on native default browser focus rings 
+- Do not remove focus indicators (avoid `outline: none`).
+- If custom focus styles are used, they must remain clearly visible and meet non-text contrast guidance.
 
 #### Touch Targets
 All interactive elements must meet a minimum touch target size of **24x24px** (or equivalent in `dp` or `pt`) to comply with WCAG 2.1. Larger sizing (such as 44x44px) is recommended for usability across Web, iOS, and Android but not a hard requirement.
@@ -140,7 +149,7 @@ Layouts must remain functional and readable at up to 400% zoom or scale:
 
 #### Live Regions / Dynamic Updates
 Auto-updating or dynamic content must be controllable and announced appropriately
-- It may be up to the consumer of Arrow to manage dynamic updates
+- It may be up to the consuming application/design system to manage dynamic updates
     - Web: Use ARIA live regions and visible controls (e.g., pause buttons).
 
 #### Text Contrast
@@ -170,12 +179,12 @@ Ensure non-text elements have sufficient color contrast.
             - Use `aria-hidden="true"` for non-image elements (e.g., SVGs, icons) that are purely decorative
 
 #### Important Note on Content Decisions
-The decision about whether an image is decorative or informative must be made by the development team. Copilot should not make assumptions about:
+The decision about whether an image is decorative or informative must be made by the development team. The assistant should not make assumptions about:
 - Image purpose (decorative vs informative)
 - Alt text content
 - The need for additional ARIA labels on semantic elements
 
-When encountering images or interactive elements, Copilot should:
+When encountering images or interactive elements, the assistant should:
 1. Maintain existing alt text if present
 2. Keep empty alt attributes if already specified
 3. Ask for clarification if the accessibility purpose is unclear
@@ -231,11 +240,11 @@ For card components that do not have multiple CTAs in them or that have large to
 `
 ---
 
-### Copilot Response Requirements
+### Response Requirements
 
-Copilot-generated content must include:
+Generated content must include:
 
-1. Valid, accessible code using Arrow Design System components.
+1. Valid, accessible code using the project’s component system (if provided), otherwise semantic HTML/CSS/JS.
 2. Inline comments explaining:
      - The purpose of accessibility features
      - Any trade-offs or browser quirks addressed

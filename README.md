@@ -57,6 +57,8 @@ npm install a11y-base-web-skill a11y-issue-writer-skill a11y-tester-skill a11y-r
 
 These MCP (Model Context Protocol) servers are needed for these Skills to work best. Make sure you have these MCP servers running and accessible to your IDE/agent for the skills to query reference data effectively.
 
+- See **docs/mcp-mapping.md** for the full Skill → MCP mapping: `docs/mcp-mapping.md`
+
 For detailed reference data, query these MCP servers:
 
 | Resource | Purpose | Repository |

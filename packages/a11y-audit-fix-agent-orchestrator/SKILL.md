@@ -5,17 +5,22 @@ description: Coordinate a full accessibility audit workflow across multiple a11y
 
 # Accessibility Orchestrator
 
+**Role:** Orchestrates the audit and fix agents for accessibility issues
+
 Coordinates the complete accessibility audit workflow by directing AI to use specialized a11y skills in sequence.
 
-## CRITICAL: Autonomous Execution
+## MCP dependencies
+- **Required (runtime):** a browser automation MCP (Playwright MCP or Microsoft PLA MCP)
+- **Optional (grounding / decision support):** `magentaa11y-mcp`, `aria-mcp`, `wcag-mcp`, `a11y-personas-mcp`, `accessibility-issues-template-mcp`
 
-**This workflow runs autonomously without stopping.** Do NOT:
-- Stop to ask "Would you like me to apply fixes?"
-- Pause between stages for confirmation
-- Request permission before making changes
-- Break the workflow into multiple interactions
+## Execution model (recommended)
 
-**Execute all three stages in a single continuous run.** The user has already requested an audit—that is your authorization to complete the entire workflow.
+Run in a single end-to-end pass **up through reporting**. When the workflow involves writing to a repo or changing code, follow this rule:
+
+- If the user explicitly asked to *apply fixes*, proceed.
+- If the user asked for an *audit* (only), produce the findings + proposed diffs/patches, then ask for a “ship it / apply fixes” confirmation before writing.
+
+This keeps the orchestrator fast and autonomous for analysis, while staying safe and predictable for code changes.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

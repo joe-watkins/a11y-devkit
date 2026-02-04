@@ -5,7 +5,13 @@ description: Run automated accessibility tests on URLs or HTML content using axe
 
 # Accessibility Tester
 
+**Role:** Testing / Audit Execution
+
 Run automated accessibility testing using axe-core and output violations in raw format or as formatted issues.
+
+## MCP dependencies
+- **Required:** Playwright MCP (`mcp_playwright_browser_navigate`, `mcp_playwright_browser_evaluate`, `mcp_playwright_browser_snapshot`)
+- **Optional (enrichment):** `wcag-mcp`, `magentaa11y-mcp`, `a11y-personas-mcp`, `accessibility-issues-template-mcp`
 
 ## Prerequisites: Playwright MCP Setup
 

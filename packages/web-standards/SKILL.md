@@ -5,7 +5,13 @@ description: Static HTML/CSS/ARIA analysis without requiring a browser. Use this
 
 # Web Standards Analyzer
 
+**Role:** Web Standards + Best Practices (for LLMs)
+
 Static accessibility analysis of HTML, CSS, and ARIA without browser execution.
+
+## MCP dependencies
+- **Required:** `aria-mcp`, `wcag-mcp`
+- **Optional:** `magentaa11y-mcp` (preferred implementation patterns)
 
 ## Analysis Categories
 

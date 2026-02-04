@@ -5,7 +5,13 @@ description: Verify that accessibility fixes resolve identified issues by re-run
 
 # Accessibility Validator
 
+**Role:** Validation / Retest + Acceptance Criteria
+
 Confirms that generated fixes resolve accessibility issues.
+
+## MCP dependencies
+- **Required:** `magentaa11y-mcp`
+- **Optional:** Playwright MCP via `a11y-tester` (runtime re-test), plus `aria-mcp` / `wcag-mcp` for grounding
 
 ## Validation Workflow
 
