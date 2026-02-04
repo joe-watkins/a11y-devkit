@@ -45,11 +45,14 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 
 ### Issue formatting
 
-- **accessibility-issues-template-mcp** *(repo docs currently reference this name)*
+- **accessibility-issues-template-mcp**
   - Purpose: standardize issue/ticket output from raw violations (axe-core, etc.)
-  - Common tools:
+  - Common tools (from repo):
     - `format_axe_violation(...)`
-    - `list_issue_templates()` / `get_issue_template(...)`
+    - `list_issue_templates()`
+    - `get_issue_template(...)`
+    - `validate_issue(...)`
+  - Note: the repo’s Quick Start config uses the server name `arc-issues` and the npm package `arc-issues-mcp`, but the capabilities match what our skills call `accessibility-issues-template-mcp`.
 
 ### Browser automation / auditing runtime
 
