@@ -16,9 +16,11 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 
 - **a11y-personas-mcp** (npm: `a11y-personas-mcp`)
   - Purpose: user-impact context; helps prioritize and describe impact beyond “fails SC X.Y.Z”
-  - Common tools:
+  - Common tools (from repo):
     - `list-personas()`
-    - `get-personas(["blindness-screen-reader-nvda", ...])`
+    - `get-personas(personas="blindness-screen-reader-nvda")`
+    - `get-personas(personas=["adhd-attention", "dyslexia-reading"])`
+    - `get-personas(personas="Screen Reader User (NVDA)")` (by title, case-insensitive)
 
 - **aria-mcp** (npm: `aria-mcp`)
   - Purpose: authoritative ARIA role/state/property validation and lookups
