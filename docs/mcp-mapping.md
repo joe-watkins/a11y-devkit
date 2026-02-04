@@ -10,9 +10,14 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
 
 - **magentaa11y-mcp** (npm: `magentaa11y-mcp`)
   - Purpose: component acceptance criteria + implementation notes ("what good looks like")
-  - Common tools used (examples from skill docs):
-    - `get_web_component("button")`
+  - Common tools (from repo):
+    - `list_web_components()` / `get_web_component("button")` / `search_web_criteria("focus trap")`
+    - `list_native_components()` / `get_native_component("date-picker")` / `search_native_criteria("label")`
+    - `get_component_gherkin("button")`
+    - `get_component_condensed("tooltip")`
     - `get_component_developer_notes("modal")`
+    - `get_component_native_notes(platform="ios", component="text-input")`
+    - `list_component_formats(component="button")`
 
 - **a11y-personas-mcp** (npm: `a11y-personas-mcp`)
   - Purpose: user-impact context; helps prioritize and describe impact beyond “fails SC X.Y.Z”
