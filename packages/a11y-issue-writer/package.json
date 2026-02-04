@@ -1,6 +1,6 @@
 {
   "name": "a11y-issue-writer-skill",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Format accessibility violations into standardized JIRA-ready issue reports",
   "license": "MIT",
   "repository": {
