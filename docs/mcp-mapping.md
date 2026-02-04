@@ -27,11 +27,14 @@ This doc maps each **Agent Skill** in `packages/` to the **MCP (Model Context Pr
     - `validate-role-attributes("button", ["aria-pressed"])`
     - `get-required-attributes("dialog")` *(or equivalent in your server)*
 
-- **wcag-guidelines-mcp** *(repo docs currently call it `wcag-guidelines-mcp`)*
-  - Purpose: WCAG success criteria + techniques lookup for grounding and ticket writing
-  - Common tools:
-    - `get-criterion("4.1.2")`
+- **wcag-guidelines-mcp** (npm: `wcag-guidelines-mcp`)
+  - Purpose: WCAG success criteria + techniques + Understanding documentation lookup for grounding and ticket writing
+  - Common tools (from repo):
+    - `get-criterion("4.1.2")` (includes Understanding docs)
+    - `get-success-criteria-detail("4.1.2")` (normative text only)
     - `get-techniques-for-criterion("1.3.1")`
+    - `get-failures-for-criterion("1.3.1")`
+    - `search-wcag("focus visible")`
 
 ### Issue formatting
 
