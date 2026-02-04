@@ -23,6 +23,30 @@ Generates fixes for accessibility issues by querying MCP servers for authoritati
 
 If an issue requires adding new elements (like a missing `<h1>`), categorize it as **Needs Manual Review** and provide guidance rather than auto-adding content.
 
+## Behavior Preservation Guardrails (Do No Harm)
+
+Accessibility fixes must preserve existing product behavior, styling intent, analytics hooks, and test selectors.
+
+**Default to the smallest safe change:**
+- Prefer adding/removing attributes on existing elements over replacing elements.
+- If changing semantics is necessary (e.g., `<div onclick>` → `<button>`), keep:
+  - Existing classes, ids, data-* attributes, and event handlers (or equivalent bindings)
+  - Existing accessible name text (do not “improve copy”)
+  - Existing layout behavior (avoid introducing new wrappers)
+
+**Event + focus safety checklist (apply before outputting a fix):**
+- Do not break click/press behavior:
+  - Ensure keyboard activation works (Enter/Space for buttons; Enter for links)
+  - If converting non-semantic to semantic, ensure key handling is not duplicated (avoid double-submit)
+- Do not introduce unexpected focus changes:
+  - Do not auto-focus elements unless explicitly required by the component’s current behavior
+  - Preserve tab order; avoid adding `tabindex` unless required and justified
+- Prefer native semantics over ARIA:
+  - Avoid `role` on native controls unless required by a known pattern
+  - Avoid adding ARIA that changes user expectations (e.g., `aria-live`) without strong evidence
+
+**If you cannot guarantee behavior preservation, escalate to _Needs Manual Review_** and explain what must be validated (e.g., analytics, form submission, keyboard interactions).
+
 ## Fix Generation Workflow
 
 For each accessibility issue:
@@ -41,6 +65,27 @@ For each accessibility issue:
 5. **Document impact** — query `a11y-personas-mcp` for affected users:
    - `get-personas(["blindness-screen-reader-nvda"])` → Returns persona details
    - `list-personas()` → Returns all 69 personas for reference
+
+## Verification Loop (Required)
+
+After proposing a fix, include a brief verification plan that can be executed by a developer or CI:
+
+**Re-run the detector(s):**
+- Re-run the same linter/axe/test that reported the issue to confirm it is resolved.
+- Confirm no new violations were introduced nearby (especially Name/Role/Value, focus order, and color contrast).
+
+**Functional regression checks (minimum):**
+- Keyboard-only:
+  - Tab/Shift+Tab reaches the control
+  - Enter/Space activation behaves as before
+  - Focus indicator remains visible
+- Screen reader sanity check (minimum expectation):
+  - Control announces an appropriate role and accessible name
+  - State is announced if applicable (checked/expanded/pressed/invalid)
+- Forms:
+  - Submission still works; validation and error messaging still appears as before
+
+**If verification depends on runtime state, routing, or app-specific behavior, flag _Needs Manual Review_** and describe exactly what to test.
 
 ## Fix Strategies by Issue Type
 
@@ -285,6 +330,15 @@ For each fix:
 ## When Manual Review Required
 
 Flag for manual review when:
+
+**Escalation criteria (hard stops):** Mark as Manual Review if any are true:
+- The fix changes interaction model (link vs button) but intent is ambiguous (navigate vs action).
+- The control is part of a composite widget (menus, dialogs, comboboxes, tabs, grids, carousels) requiring:
+  - managed focus, roving tabindex, aria-activedescendant, or complex keyboard maps
+- Any change would require adding/removing DOM nodes beyond a direct semantic replacement.
+- Dynamic announcements might be needed (`aria-live`, status messages) but timing/content is uncertain.
+- The issue is “structural accessibility” (landmarks/headings/page outline) where the correct structure is a product decision.
+- The correct accessible name/alt text requires understanding the UI purpose or business domain.
 
 - Content decision needed (alt text content, heading text)
 - Complex widget requiring design input

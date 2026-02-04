@@ -114,6 +114,30 @@ When presenting collections of similar items (like articles, cards, products):
 - Tab, Shift+Tab, Enter, Escape, Arrow keys
 - Do not remove focus styles. Prefer the native focus ring; if customizing, ensure the indicator remains clearly visible (including at 400% zoom) and has sufficient contrast.
 
+#### WCAG 2.2 Additions to Keep in Scope (Layered + Often Manual)
+
+In addition to WCAG 2.0/2.1 patterns, keep these WCAG 2.2 criteria in view:
+
+- **2.4.11 Focus Not Obscured (Minimum) (AA)**
+  When an element receives keyboard focus, it must not be hidden by author-created content (e.g., sticky headers/footers, cookie banners, dialogs). If you implement sticky UI, ensure focused controls remain visible without requiring pointer input.
+
+- **2.5.7 Dragging Movements (AA)**
+  If a feature uses drag-and-drop, provide a non-drag alternative (e.g., buttons to move items, keyboard-accessible reorder controls).
+
+- **2.5.8 Target Size (Minimum) (AA)**
+  Minimum 24×24 CSS px for pointer targets (covered below). This often requires design/system consideration; treat failures as high-priority usability defects.
+
+- **3.2.6 Consistent Help (A)**
+  If help mechanisms exist (support link, chat, help text), keep location/order consistent across pages.
+
+- **3.3.7 Redundant Entry (A)**
+  Avoid requiring users to re-enter information previously provided in the same process (unless essential). Prefer auto-fill, prepopulation, or selectable options.
+
+- **3.3.8 Accessible Authentication (Minimum) (AA)**
+  Authentication should not rely on cognitive function tests (e.g., remembering a password) without an accessible alternative (e.g., password managers supported, magic links, WebAuthn/passkeys, copy/paste allowed).
+
+Note: Several of these are difficult to guarantee via static rules alone; they require **targeted manual verification** during testing/validation.
+
 #### Touch Targets
 All interactive elements should meet a minimum touch target size of **24×24 CSS px** to align with WCAG 2.2 (SC 2.5.8 Target Size (Minimum), AA). Larger sizing (such as 44×44) is recommended for usability across Web, iOS, and Android.
 
@@ -151,6 +175,9 @@ Auto-updating or dynamic content must be controllable and announced appropriatel
     - 4.5:1 for normal text (defined as up to and including 18.5px regular or 14pt bold)
     - 3:1 for large text (≥18pt or ≥14pt bold)
     - 3:1 for non-text UI elements (e.g., icons, focus indicators, input borders, and buttons) against adjacent background
+
+**Focus indicator quality (recommended):**
+- Beyond “focus is visible”, ensure the focus indicator is *easy to perceive* (size + contrast). WCAG 2.2 adds stronger expectations via Focus Appearance (AAA). Even when only aiming for AA, treat weak focus styling as a defect that impedes keyboard users.
 
 #### Non-text Contrast: 
 Ensure non-text elements have sufficient color contrast.

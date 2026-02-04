@@ -94,6 +94,19 @@ Automated testing catches issues static analysis cannot:
 
 ### Step 1C: Compare Results & Plan Remediation
 
+### Always Produce a Manual Review Queue (Layered Testing)
+
+Even in an autonomous workflow, some criteria cannot be fully proven by static + axe-core. Always add a “Manual Review Queue” section to the report, including (at minimum):
+
+- Keyboard-only navigation: order, traps, expected key behavior
+- **WCAG 2.2 2.4.11 Focus Not Obscured (Minimum):** sticky UI does not cover focus
+- Zoom/reflow: 320 CSS px width and 400% zoom behavior on key templates
+- Pointer targets: **2.5.8 Target Size (Minimum)** spot-check small controls
+- Drag-and-drop: **2.5.7 Dragging Movements** alternative exists
+- Authentication (if applicable): **3.3.8 Accessible Authentication (Minimum)** support for password managers / copy/paste
+
+If automated evidence is insufficient, categorize as “⚠️ Needs Manual Review” rather than claiming “Fixed”.
+
 **Compare findings from both methods** to determine the best remediation strategy:
 
 | Scenario | Confidence | Action |
@@ -197,6 +210,10 @@ For each issue identified in Stage 1:
    - Are we adding visible content? If yes, don't auto-fix
 
 ### Critical Constraint: No Visual Changes
+
+**Clarification:** Some accessibility fixes *may* require visible changes to be truly effective (e.g., strengthening focus indication). If a fix materially affects visuals, do not silently change design; instead:
+- apply only if it preserves the intended design system behavior, or
+- flag as “Needs Manual Review” with a suggested, minimal design-safe approach.
 
 **Fixes must be invisible to sighted users.** The page design MUST NOT change visually. Accessibility improvements happen "under the hood" through:
 - Adding/fixing attributes (ARIA, alt text, labels)

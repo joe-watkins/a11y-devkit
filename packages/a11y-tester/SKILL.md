@@ -58,6 +58,16 @@ This skill provides two output modes:
 ## Testing Workflow
 
 1. **Navigate to URL**: Use `mcp_playwright_browser_navigate` to load the page
+
+### Capture the Right Page State (Critical for Useful Results)
+
+Before running axe-core:
+- Ensure the **target UI is visible** (open menus, expand accordions, navigate to the failing route/state).
+- If a modal or menu is involved, test **both**:
+  - (a) the trigger/closed state and
+  - (b) the open state (focus trapping, aria-expanded, inert/background, etc.)
+- If authentication gates content, note that results may be partial; prefer a test account or a public repro route.
+
 2. **Run axe-core**: Use `mcp_playwright_browser_evaluate` to inject and run axe-core
 3. **Output results** - Choose based on request:
    - **Option A: Raw violations** - Return the violations array with summary statistics
@@ -182,6 +192,14 @@ async () => {
   }
   // Run axe and return results
   const results = await axe.run();
+
+  // (Optional) Recommended tags focus for WCAG 2.2 AA mapping
+  // Note: Tag availability depends on axe-core version.
+  // const results = await axe.run(document, {
+  //   runOnly: { type: 'tag', values: ['wcag2a','wcag2aa','wcag21aa','wcag22aa'] },
+  //   resultTypes: ['violations','incomplete']
+  // });
+
   return { 
     violations: results.violations, 
     passes: results.passes.length, 
@@ -280,6 +298,27 @@ magentaa11y-mcp: get_web_component("button")
 a11y-personas-mcp: get-personas(["blindness-screen-reader-nvda"])
 → Returns persona details showing who is affected
 ```
+
+## Manual Checks to Pair with axe-core (Recommended)
+
+axe-core typically finds only a subset of issues. Always pair results with a short manual pass:
+
+Keyboard + Focus
+- Tab/Shift+Tab order is logical; no keyboard traps
+- Focus is visible and **not obscured** by sticky UI (WCAG 2.2 SC 2.4.11)
+- Menus/modals: focus moves in/out correctly; Escape closes where expected
+
+Zoom / Reflow
+- 200% text resize still usable
+- 400% zoom / small viewport reflow works without horizontal scrolling for typical pages
+
+Pointer / Touch
+- Targets meet **24×24 CSS px minimum** where applicable (WCAG 2.2 SC 2.5.8)
+- Drag interactions have non-drag alternatives (WCAG 2.2 SC 2.5.7)
+
+Forms
+- Errors are associated to fields; instructions are programmatic
+- Authentication flows allow password managers / copy-paste (WCAG 2.2 SC 3.3.8)
 
 ## Notes
 

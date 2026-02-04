@@ -157,6 +157,13 @@ Fix did not resolve the issue:
 - [ ] Alt content appropriate (descriptive or empty)
 - [ ] Decorative images marked correctly
 
+## Evidence Expectations (Make Validation Actionable)
+
+For each “✅ Fixed” issue, include at least one of:
+- The **before/after** axe rule status (rule id + instance count)
+- The **selector / snippet** that was previously failing and now passes
+- Any **manual verification note** required for final confidence (e.g., focus visibility, reflow)
+
 ## Output Format
 
 ```markdown
@@ -195,6 +202,14 @@ After validation, verify no new issues introduced:
 1. Run full axe-core scan on modified code
 2. Compare total violation count
 3. Flag any new issues not in original list
+
+### WCAG 2.2-Focused Regression Checks (Often Manual)
+
+Even if axe-core is clean, explicitly verify or flag for manual review:
+- **Focus Not Obscured (Minimum) (2.4.11 AA):** focused control remains visible with sticky headers/footers, banners, dialogs
+- **Dragging Movements (2.5.7 AA):** drag-and-drop has an alternative (keyboard/buttons)
+- **Target Size (Minimum) (2.5.8 AA):** small icon buttons/controls meet 24×24 CSS px or have an equivalent exception rationale
+- **Accessible Authentication (Minimum) (3.3.8 AA):** login supports password managers; no cognition-only “puzzles” without alternatives
 
 ```markdown
 ## Regression Check

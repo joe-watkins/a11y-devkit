@@ -25,6 +25,22 @@ Verify these tools are available:
 2. **Format each violation** - Call `format_axe_violation` with violation data and context
 3. **Output formatted issues** - Present issues in requested format (markdown, JIRA, etc.)
 
+## Issue Quality Checklist (Make It Actionable)
+
+Every issue should answer, in plain language:
+
+- **Expected result:** What should happen for an accessible experience
+- **Actual result:** What currently happens (observable failure)
+- **User impact:** Who is impacted and how (keyboard-only, screen reader, low vision, cognitive, etc.)
+- **Evidence:** One or more of:
+  - Failing DOM snippet + selector
+  - Count of instances / pages affected
+  - Screenshot (if available) or SR output transcript (if provided)
+- **Acceptance criteria (Definition of Done):**
+  - Concrete pass/fail statements (e.g., “Control has an accessible name exposed to AT”)
+  - Include regression-safe constraints (don’t break visible label, don’t change focus order unexpectedly)
+- **How to verify:** Minimal steps for QA to confirm the fix (automated + manual)
+
 ## MCP Tools
 
 ### format_axe_violation
@@ -120,6 +136,24 @@ Each formatted issue includes:
 - **How to test**: Automated and manual verification steps
 - **Resources**: Deque University link, WCAG reference
 
+### Environment + AT Matrix (when relevant)
+
+If the failure is AT- or browser-dependent (or likely to be), include:
+
+- **Test environment (if known):** OS, browser, assistive technology + version
+- **AT/Browser matrix (template):**
+
+| OS | Browser | Assistive Tech | Result | Notes |
+|----|---------|----------------|--------|------|
+| Windows | Chrome/Edge | NVDA/JAWS | [Pass/Fail/Untested] | |
+| macOS | Safari/Chrome | VoiceOver | [Pass/Fail/Untested] | |
+| iOS | Safari | VoiceOver | [Pass/Fail/Untested] | |
+| Android | Chrome | TalkBack | [Pass/Fail/Untested] | |
+
+Guidance:
+- If you only have axe output and no manual testing, mark rows as **Untested** and do not invent results.
+- Still include the matrix when you suspect AT differences (custom widgets, ARIA heavy UI, focus management, dialogs/menus/tabs).
+
 ### Severity Mapping
 
 | axe Impact | Issue Severity | Priority |
@@ -129,6 +163,23 @@ Each formatted issue includes:
 | moderate | Average | Medium |
 | minor | Low | Low |
 
+## WCAG Mapping Guidance (Keep It Precise)
+
+When including WCAG references:
+
+- Prefer **one primary Success Criterion** that best represents the failure.
+- Add **secondary SCs** only when clearly applicable (avoid “SC spam”).
+- Common mappings:
+  - Missing accessible name for interactive control → **4.1.2 Name, Role, Value** (often primary)
+  - Missing programmatic label/relationships → **1.3.1 Info and Relationships**
+  - Keyboard inoperable interactions → **2.1.1 Keyboard**
+  - Focus not visible due to CSS → **2.4.7 Focus Visible**
+  - Duplicate IDs / broken ARIA references / invalid markup impacting parsing → **4.1.1 Parsing**
+  - Non-text alternative missing → **1.1.1 Non-text Content**
+
+If axe provides tags like `wcag143`:
+- Preserve them, but also translate to the human-readable SC name/number in the final issue.
+
 ## Batch Processing
 
 When processing multiple violations:
@@ -136,6 +187,12 @@ When processing multiple violations:
 1. **Group by rule** - Combine similar violations
 2. **Order by severity** - Critical first, then serious, moderate, minor
 3. **Number sequentially** - Issue #1, Issue #2, etc.
+4. **Prefer one root cause per ticket**:
+   - If multiple nodes share the same underlying fix, keep them together.
+   - If nodes differ materially (different components, different fixes), split into separate issues.
+5. **Include instance count + sampling**:
+   - Provide total occurrences if known (e.g., “12 instances across 3 pages”)
+   - Include 1–3 representative selectors/snippets, not an overwhelming dump
 
 Example output structure:
 

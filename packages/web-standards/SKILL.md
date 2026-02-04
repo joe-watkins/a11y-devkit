@@ -77,6 +77,21 @@ Check page has appropriate landmarks:
 - Landmarks inside landmarks of same type
 - Overuse of landmarks (every section doesn't need one)
 
+### 3.5 Document & Metadata (Static)
+
+Quick static checks that frequently correlate with accessibility failures:
+
+| Check | What to look for | Why it matters |
+| ----- | ---------------- | -------------- |
+| Page language | `<html lang="...">` present and valid BCP 47 tag | Enables correct screen reader pronunciation (WCAG 3.1.1) |
+| Document title | `<title>` present and meaningful | Helps users identify the page (WCAG 2.4.2) |
+| ID uniqueness | Duplicate `id` values in the same document | Breaks label/description references and scripting (WCAG 4.1.1) |
+| Invalid nesting | Interactive inside interactive (e.g., `<button><a>`), headings inside links used incorrectly, etc. | Often causes AT/keyboard inconsistencies (WCAG 4.1.1 / 1.3.1) |
+
+Notes:
+- Static analysis can flag missing/invalid `lang`, missing `<title>`, duplicate IDs, and common invalid nesting patterns with high confidence.
+- If the snippet is partial (component-only), note “document-level checks not applicable” rather than failing.
+
 ### 4. Heading Hierarchy
 
 Verify heading structure:
@@ -107,6 +122,21 @@ Check all form controls:
 - Label not programmatically associated
 - Hidden label without accessible alternative
 
+### 5.5 Accessible Name, Role, Value (ANRV)
+
+Static heuristics for “can a user perceive/operate this control with AT?”
+
+| Control pattern | Check | Common issue |
+| --------------- | ----- | ------------ |
+| Buttons/links | Has an accessible name (text content OR `aria-label` OR `aria-labelledby`) | Icon-only controls with no name (WCAG 4.1.2 / 2.4.4) |
+| Inputs | Name is programmatically associated (`<label for>`, `aria-labelledby`, or `aria-label`) | Placeholder-only naming (WCAG 3.3.2 / 1.3.1) |
+| Custom widgets | Role is appropriate + required ARIA attributes present | Missing role/required props; mismatched role/props (WCAG 4.1.2) |
+| ARIA references | `aria-labelledby` / `aria-describedby` targets exist + are unique | Broken references (often due to duplicate IDs) (WCAG 4.1.1) |
+
+Implementation note:
+- Prefer visible text + semantic HTML.
+- Use `aria-mcp` when a custom widget is detected to confirm required attributes/required context for the chosen role.
+
 ### 6. Image Accessibility
 
 Check all images and graphics:
@@ -132,6 +162,20 @@ Static checks for keyboard support:
 | `onclick` without keyboard handler | Mouse-only interaction               |
 | Non-focusable interactive          | Custom widget without `tabindex="0"` |
 
+Additional static red flags:
+
+- `onmousedown`, `onmouseup`, `onpointerdown` handlers without equivalent keyboard activation
+- Click handlers attached to non-interactive elements without:
+  - `role`, keyboard handlers, and focusability (`tabindex="0"`)
+- CSS removing focus indicators (also see Text and Contrast):
+  - `:focus { outline: none; }`
+  - `:focus-visible { outline: none; }`
+
+When present, capture:
+- The exact element snippet
+- The event handler pattern
+- Whether a semantic element (`<button>`, `<a href>`) would remove the need for scripting
+
 **Query wcag-mcp:** `get-criterion("2.1.1")` for Keyboard
 
 ### 8. Text and Contrast (CSS)
@@ -151,7 +195,7 @@ Check CSS for potential issues:
 
 Report issues in this structure:
 
-````markdown
+```markdown
 ## Static Analysis Results
 
 Found X accessibility issues:
@@ -162,14 +206,16 @@ Found X accessibility issues:
 - **Category:** [Semantic HTML/ARIA/Landmarks/etc.]
 - **Severity:** [Critical/Serious/Moderate/Minor]
 - **WCAG:** [Success criterion from wcag-mcp]
+- **Confidence:** [High/Medium/Low] (Static-only signal strength)
+- **Instances:** [count + brief list of selectors/paths]
+- **Evidence:** [snippet(s), selector(s), relevant attribute values, and why it fails]
+- **Recommended Verification:** [manual check(s) needed in browser/AT, if any]
 - **Code:**
-
-```html
-[problematic code]
-```
-````
-
+  ```html
+  [problematic code]
+  ```
 - **Problem:** [What's wrong]
+```
 
 ---
 
@@ -181,6 +227,20 @@ Found X accessibility issues:
 | Serious  | Major barrier (skipped headings, no labels)          |
 | Moderate | Degrades experience (redundant ARIA, poor semantics) |
 | Minor    | Best practice violation (optimization opportunities) |
+
+## Static Analysis Limitations (Important)
+
+Static analysis is best at detecting:
+- Missing semantics (wrong element choice, missing labels, missing landmarks/headings)
+- Invalid/unsupported ARIA usage and broken ARIA references
+- Focus indicator removal in CSS
+
+Static analysis is limited for:
+- Color contrast (needs computed colors)
+- Keyboard operability of scripted widgets (needs runtime behavior)
+- Screen reader output, focus order, and dynamic announcements (needs browser + AT)
+
+When an issue depends on runtime behavior, still file it, but mark **Confidence: Medium/Low** and add **Recommended Verification** steps.
 
 ## MCP Server Queries
 
