@@ -1,116 +1,193 @@
 ---
 name: web-standards
-description: Static HTML/CSS/ARIA analysis without requiring a browser. Use for semantic HTML, ARIA validity, landmarks, headings, forms, keyboard/focus signals, tables, and other accessibility problems detectable from source. Queries aria-mcp for ARIA rules and wcag-mcp for SC mapping.
+description: Static HTML/CSS/ARIA analysis without requiring a browser. Use this skill when analyzing code for semantic HTML issues, ARIA validity, landmark structure, heading hierarchy, form labeling, or any accessibility problems detectable from source code. Queries aria-mcp for ARIA rules and wcag-mcp for success criteria mapping. Part of the a11y-orchestrator workflow.
 ---
 
 # Web Standards Analyzer
 
 Static accessibility analysis of HTML, CSS, and ARIA without browser execution.
 
-## Rules of thumb (HTML/ARIA)
-1. Prefer native elements over ARIA.
-2. Don’t add ARIA when native semantics already exist.
-3. Every interactive control needs: keyboard operability + accessible name + visible focus.
-4. ARIA can’t “fix” broken interaction. If you’re adding lots of ARIA, re-check the HTML choice.
-5. Don’t hide focusable content from AT (`aria-hidden="true"` on focusable content is almost always a bug).
+## Analysis Categories
 
-## Analysis categories
+Work through each category, noting any issues found.
 
-### 1) Semantic HTML
+### 1. Semantic HTML
 
-| Check | Issue pattern | Fix direction |
-|---|---|---|
-| Buttons | `<div onclick>`, `<span onclick>`, `<a role="button">` | Use `<button>` (and set `type="button"` unless it should submit a form) |
-| Links | Clickable elements used for navigation without `<a href>` | Use `<a href>` |
-| Headings | Styled `<div>` headings; skipped levels | Use `<h1>`–`<h6>` in logical order |
-| Lists | Series of `<div>` items | Use `<ul>/<ol>` + `<li>` |
-| Tables | `<div>` grids for tabular data | Use `<table>` + headers |
-| Forms | Inputs without associated labels | Add `<label>` or appropriate ARIA |
+Check for proper semantic element usage:
 
-Also check:
-- correct input types (`email`, `tel`, etc.)
-- avoid using heading tags purely for styling
+| Check    | Issue Pattern                                                  | Fix Direction                     |
+| -------- | -------------------------------------------------------------- | --------------------------------- |
+| Buttons  | `<div onclick>`, `<span onclick>`, `<a role="button">`         | Use `<button>`                    |
+| Links    | `<span onclick>` for navigation, `<button>` with href behavior | Use `<a href>`                    |
+| Headings | `<div class="title">`, skipped levels (h1→h3)                  | Use `<h1>`-`<h6>` in order        |
+| Lists    | Series of `<div>` for list items                               | Use `<ul>/<ol>` with `<li>`       |
+| Tables   | `<div>` grids for tabular data                                 | Use `<table>` with proper headers |
+| Nav      | `<div class="nav">`                                            | Use `<nav>` landmark              |
+| Main     | Content without `<main>`                                       | Wrap primary content in `<main>`  |
+| Forms    | Inputs without associated labels                               | Add `<label for="">`              |
 
-### 2) ARIA validity
+### 2. ARIA Validity
 
-Query `aria-mcp`:
-- `get-role("button")`
-- `validate-role-attributes("button", ["aria-pressed"])`
-- `get-prohibited-attributes("button")`
+Query `aria-mcp` for authoritative ARIA rules:
+
+- `get-role("button")` → Returns role requirements
+- `validate-role-attributes("button", ["aria-pressed"])` → Validates ARIA usage
+- `get-prohibited-attributes("button")` → Returns disallowed attributes
 
 Check for:
-- redundant/misleading ARIA on native elements
-- missing accessible names (icon-only controls)
-- `aria-labelledby` / `aria-describedby` referencing missing/duplicate IDs
-- `aria-hidden="true"` on focusable elements (or ancestors)
-- `role="presentation"/"none"` on interactive/focusable elements
-- dialogs without accessible name (`aria-labelledby`/`aria-label`)
 
-### 3) Landmarks
-- one main per view
-- nested `<header>/<footer>` inside sectioning content are **not** banner/contentinfo
-- multiple nav landmarks should be distinguishable via an accessible name (e.g., `aria-label="Primary"`)
+**Invalid ARIA on semantic elements:**
 
-### 4) Heading hierarchy
-- Prefer a single `<h1>` for the page/topic; multiple `<h1>` → flag for review.
-- Don’t skip levels.
+- `<button role="button">` — redundant
+- `<a role="link">` — redundant
+- `<a role="button">` — misuse (use `<button>` instead)
 
-### 5) Forms
-- labels are programmatically associated (not placeholder-only)
-- errors/helper text associated via `aria-describedby`
-- invalid state uses `aria-invalid` where relevant
-- groups use `<fieldset>/<legend>`
-- autocomplete present for common fields (when applicable)
+**Missing required ARIA:**
 
-### 6) Images/icons
-- `<img>` has `alt` (empty for decorative)
-- `<svg>` either named appropriately or `aria-hidden="true"` when decorative
+- Custom widgets without appropriate roles
+- Interactive elements without accessible names
+- Dynamic content without live regions
 
-### 7) Keyboard & focus signals (static heuristics)
+**Invalid ARIA combinations:**
 
-| Check | Issue pattern |
-|---|---|
-| Positive tabindex | disrupts natural order |
-| `tabindex="-1"` on interactive | usually removes from tab order (sometimes OK for focus mgmt only) |
-| `onclick` on non-native controls | mouse-only unless role + tabindex + Enter/Space handling |
-| Focus styles removed | `outline: none/0` without replacement |
+- `aria-checked` on non-checkbox/switch roles
+- `aria-expanded` on elements without expandable content
+- `aria-selected` outside selection contexts
 
-Also check:
-- presence of a skip link (`href="#main"` etc.)
+**Query aria-mcp** for role-specific requirements when custom widgets are found:
 
-### 8) Focus management (static signals)
-- skip link targets exist + are unique
-- hidden containers don’t contain focusable descendants
+- `get-required-attributes("tabpanel")` → Returns required attributes
+- `get-required-context("tab")` → Returns required parent context
+- `suggest-role("dropdown menu")` → Suggests appropriate role
 
-### 9) Tables
-- `<th>` used for headers; `scope` for simple tables
-- complex headers use `headers`/`id`
-- `<caption>` when it improves understanding
+### 3. Landmark Structure
 
-### 10) Contrast (static hints)
-> True contrast usually can’t be proven from CSS alone (variables/themes/images). Flag obvious risks/patterns.
+Check page has appropriate landmarks:
 
-## Output format
+| Landmark                           | Expected         | Issue If Missing          |
+| ---------------------------------- | ---------------- | ------------------------- |
+| `<main>` or `role="main"`          | One per page     | No main landmark          |
+| `<nav>` or `role="navigation"`     | For navigation   | Navigation not identified |
+| `<header>` or `role="banner"`      | Top-level header | No banner landmark        |
+| `<footer>` or `role="contentinfo"` | Top-level footer | No content info           |
 
-```markdown
+**Watch for:**
+
+- Multiple `<main>` elements
+- Landmarks inside landmarks of same type
+- Overuse of landmarks (every section doesn't need one)
+
+### 4. Heading Hierarchy
+
+Verify heading structure:
+
+1. Page should have exactly one `<h1>`
+2. Headings should not skip levels (h1→h2→h3, not h1→h3)
+3. Headings should reflect content hierarchy
+4. Visual headings should be semantic headings
+
+**Query wcag-mcp:** `get-criterion("1.3.1")` for Info and Relationships
+
+### 5. Form Accessibility
+
+Check all form controls:
+
+| Element         | Required    | Check                                             |
+| --------------- | ----------- | ------------------------------------------------- |
+| `<input>`       | Label       | Has `<label for="">` or `aria-label`              |
+| `<select>`      | Label       | Has associated label                              |
+| `<textarea>`    | Label       | Has associated label                              |
+| Required fields | Indication  | `required` or `aria-required`                     |
+| Errors          | Association | `aria-describedby` to error message               |
+| Groups          | Labeling    | `<fieldset>`/`<legend>` for radio/checkbox groups |
+
+**Invalid patterns:**
+
+- Placeholder as only label
+- Label not programmatically associated
+- Hidden label without accessible alternative
+
+### 6. Image Accessibility
+
+Check all images and graphics:
+
+| Element             | Check                                | Issue                               |
+| ------------------- | ------------------------------------ | ----------------------------------- |
+| `<img>`             | Has `alt` attribute                  | Missing alt                         |
+| Informative `<img>` | `alt` describes content              | Empty alt on meaningful image       |
+| Decorative `<img>`  | `alt=""`                             | Descriptive alt on decorative image |
+| `<svg>`             | Has accessible name or `aria-hidden` | SVG not labeled or hidden           |
+| Icon fonts          | Has text alternative                 | Icon-only with no text              |
+
+**Query wcag-mcp:** `get-criterion("1.1.1")` for Non-text Content
+
+### 7. Keyboard Accessibility
+
+Static checks for keyboard support:
+
+| Check                              | Issue Pattern                        |
+| ---------------------------------- | ------------------------------------ |
+| `tabindex` > 0                     | Disrupts natural tab order           |
+| `tabindex="-1"` on interactive     | Removes from tab order               |
+| `onclick` without keyboard handler | Mouse-only interaction               |
+| Non-focusable interactive          | Custom widget without `tabindex="0"` |
+
+**Query wcag-mcp:** `get-criterion("2.1.1")` for Keyboard
+
+### 8. Text and Contrast (CSS)
+
+Check CSS for potential issues:
+
+| Check               | Issue Pattern              |
+| ------------------- | -------------------------- |
+| `outline: none`     | Removes focus indicator    |
+| `outline: 0`        | Removes focus indicator    |
+| Fixed font sizes    | May prevent text resize    |
+| `user-select: none` | May prevent text selection |
+
+**Query wcag-mcp:** `get-criterion("2.4.7")` for Focus Visible, `get-criterion("1.4.4")` for Resize Text
+
+## Output Format
+
+Report issues in this structure:
+
+````markdown
 ## Static Analysis Results
 
 Found X accessibility issues:
 
 ### Issue 1: [Brief description]
-- **Location:** [file:line or element path]
-- **Category:** [Semantic HTML / ARIA / Landmarks / Forms / Keyboard / Tables / CSS]
-- **Severity:** [Critical/Serious/Moderate/Minor]
-- **WCAG:** [SC from wcag-mcp if known]
-- **Code:**
-  ```html
-  [problematic code]
-  ```
-- **Problem:** [What’s wrong]
-- **Fix:** [What to change / recommended pattern]
-```
 
-## MCP lookups (common)
-- WCAG: `wcag-mcp.get-criterion("1.3.1")`, `get-criterion("2.1.1")`, `get-criterion("2.4.7")`, `get-criterion("1.1.1")`
-- ARIA: role/attribute validity via `aria-mcp`
-- Correct patterns: `magentaa11y-mcp`
+- **Location:** [file:line or element path]
+- **Category:** [Semantic HTML/ARIA/Landmarks/etc.]
+- **Severity:** [Critical/Serious/Moderate/Minor]
+- **WCAG:** [Success criterion from wcag-mcp]
+- **Code:**
+
+```html
+[problematic code]
+```
+````
+
+- **Problem:** [What's wrong]
+
+---
+
+## Severity Guidelines
+
+| Severity | Criteria                                             |
+| -------- | ---------------------------------------------------- |
+| Critical | Blocks access entirely (no keyboard, no name)        |
+| Serious  | Major barrier (skipped headings, no labels)          |
+| Moderate | Degrades experience (redundant ARIA, poor semantics) |
+| Minor    | Best practice violation (optimization opportunities) |
+
+## MCP Server Queries
+
+When you encounter these situations, query the referenced MCP server:
+
+| Situation              | Query MCP         | Example Tool                             |
+| ---------------------- | ----------------- | ---------------------------------------- |
+| Custom ARIA widget     | `aria-mcp`        | `get-required-attributes("dialog")`      |
+| WCAG criterion details | `wcag-mcp`        | `get-techniques-for-criterion("1.3.1")`  |
+| Correct implementation | `magentaa11y-mcp` | `get_component_developer_notes("modal")` |
