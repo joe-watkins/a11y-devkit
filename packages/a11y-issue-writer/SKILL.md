@@ -1,174 +1,82 @@
 ---
 name: a11y-issue-writer
-description: Format accessibility violations into standardized, JIRA-ready issue reports using the accessibility-issues-template-mcp. Use this skill when users want to write accessibility issues, format axe-core violations as tickets, create accessibility bug reports, generate issue templates from test results, or convert violations to standardized formats. Triggers on requests like "write issues for these violations", "format as JIRA tickets", "create accessibility bug reports", or "generate issue from axe results".
+description: Format accessibility violations into standardized, JIRA-ready issue reports using the accessibility-issues-template-mcp. Optimized for developer-actionable reports: clear repro, expected vs actual, WCAG mapping, evidence, and assistive technology (AT) coverage.
 ---
 
 # Accessibility Issue Writer
 
-Format accessibility violations into standardized issue reports using the accessibility-issues-template-mcp.
+Format accessibility violations into standardized issue reports using **accessibility-issues-template-mcp**.
+
+## What “good” looks like (minimum fields)
+- **Where**: URL/route + state (e.g., modal open, validation errors shown)
+- **Environment**: OS + version; browser + version; viewport/breakpoint; auth state/flags (if relevant)
+- **AT** (if tested): NVDA/JAWS/VoiceOver/TalkBack + version
+- **Repro steps** (deterministic) incl. keyboard steps when relevant
+- **Actual** vs **Expected** (required)
+- **WCAG mapping** (SC + level) when known; otherwise “Needs confirmation”
+- **Impact**: severity based on user impact (not just tool impact)
+- **Evidence**: selector/target + snippet; screenshot/video for interaction issues
+- **Acceptance criteria** + **How to test** (automated + manual)
 
 ## Prerequisites
+- MCP server: `accessibility-issues-template-mcp`
+- Tools expected:
+  - `format_axe_violation`
+  - `list_issue_templates`
+  - `get_issue_template`
+  - `validate_issue`
 
-Requires the **accessibility-issues-template-mcp** server configured in your IDE.
-
-**Repository:** [github.com/joe-watkins/accessibility-issues-template-mcp](https://github.com/joe-watkins/accessibility-issues-template-mcp)
-
-Verify these tools are available:
-- `format_axe_violation`
-- `list_issue_templates`
-- `get_issue_template`
-- `validate_issue`
+Repo: https://github.com/joe-watkins/accessibility-issues-template-mcp
 
 ## Workflow
+1. **Receive violations + context** (URL/route, OS/browser).
+2. **Collect missing context** (ask if absent): viewport, auth state, AT tested, expected vs actual, evidence links.
+3. **Format each violation** via `format_axe_violation(violation, context)`.
+4. **Add report-quality fields**: actual/expected, impact, acceptance criteria, how-to-test.
+5. **Validate** with `validate_issue` and fill gaps (or ask targeted questions).
+6. **Batch output** grouped for fixability (see Batch Processing).
 
-1. **Receive violations** - Accept axe-core violations array or individual violation objects
-2. **Format each violation** - Call `format_axe_violation` with violation data and context
-3. **Output formatted issues** - Present issues in requested format (markdown, JIRA, etc.)
+## WCAG mapping guidance (practical)
+- Use `violation.tags`:
+  - `wcag143` → SC 1.4.3
+  - `wcag2aa` / `wcag21aa` / `wcag22aa` → level/version context
+- Prefer the most specific SC tags; list multiple SCs if present.
+- If tags are missing/unclear: mark **Needs confirmation** and include axe rule id + helpUrl.
 
-## MCP Tools
+## AT matrix guidance (keep lightweight)
+Each issue should state:
+- **Likely affected** user groups (e.g., screen reader users; keyboard-only; low vision).
+- **Validated with** (if tested) or explicitly “Not tested”.
 
-### format_axe_violation
+Suggested minimum combos:
+- NVDA + Firefox/Chrome (Windows)
+- VoiceOver + Safari (macOS)
+- TalkBack + Chrome (Android) (if mobile is in scope)
 
-Convert a single axe-core violation to a formatted issue report.
+## Batch processing (don’t over-merge)
+1. Group by **rule + page/route + component**.
+2. Preserve instances:
+   - include an Instances list (selectors/targets + count)
+   - split if across different pages/flows or different fixes
+3. Order by severity.
 
-```
-format_axe_violation(
-  violation: {
-    id: "color-contrast",
-    impact: "serious",
-    tags: ["wcag2aa", "wcag143"],
-    description: "Ensures contrast between foreground and background colors meets WCAG 2 AA thresholds",
-    help: "Elements must have sufficient color contrast",
-    helpUrl: "https://dequeuniversity.com/rules/axe/4.8/color-contrast",
-    nodes: [{ html: "<p class='low-contrast'>...</p>", target: [".low-contrast"] }]
-  },
-  context: {
-    url: "https://example.com",
-    browser: "Chromium",
-    operatingSystem: "Windows"
-  }
-)
-```
+## Output format (JIRA-ready)
+Each issue should include:
+- Title
+- Severity/Priority
+- WCAG mapping
+- URL/route
+- Environment + AT
+- Preconditions
+- Steps to reproduce
+- Actual result
+- Expected result
+- Affected element(s) / instances
+- User impact
+- Acceptance criteria
+- How to test
+- Evidence + resources
 
-### list_issue_templates
-
-List all 28+ available issue templates.
-
-```
-list_issue_templates()
-```
-
-### get_issue_template
-
-Retrieve a specific template by axe rule ID.
-
-```
-get_issue_template(templateName: "color-contrast")
-```
-
-### validate_issue
-
-Check formatted issue for completeness.
-
-```
-validate_issue(issue: { /* formatted issue object */ })
-```
-
-## Input Formats
-
-### Full axe-core Results
-
-When receiving complete axe-core output, iterate over the `violations` array:
-
-```javascript
-// From axe.run() results
-results.violations.forEach(violation => {
-  format_axe_violation(violation, context)
-})
-```
-
-### Single Violation
-
-Format individual violations as received:
-
-```
-format_axe_violation(violation: singleViolation, context: contextObject)
-```
-
-### Manual Input
-
-For manually reported issues, use `get_issue_template` to get the appropriate template structure:
-
-```
-get_issue_template(templateName: "button-name")
-```
-
-## Output Format
-
-Each formatted issue includes:
-
-- **Title**: Rule name and brief description
-- **Severity**: Mapped from axe impact (critical/serious/moderate/minor)
-- **URL/Path**: Where the issue was found
-- **Steps to reproduce**: Navigation instructions
-- **Element**: Description and location
-- **What is the issue**: Specific failure description
-- **Why it is important**: User impact explanation
-- **Code reference**: Failing HTML snippet
-- **How to fix**: Remediation guidance
-- **Compliant code example**: Fixed HTML snippet
-- **How to test**: Automated and manual verification steps
-- **Resources**: Deque University link, WCAG reference
-
-### Severity Mapping
-
-| axe Impact | Issue Severity | Priority |
-|------------|----------------|----------|
-| critical | Critical | Blocker |
-| serious | Severe | High |
-| moderate | Average | Medium |
-| minor | Low | Low |
-
-## Batch Processing
-
-When processing multiple violations:
-
-1. **Group by rule** - Combine similar violations
-2. **Order by severity** - Critical first, then serious, moderate, minor
-3. **Number sequentially** - Issue #1, Issue #2, etc.
-
-Example output structure:
-
-```markdown
-# Accessibility Issues Report
-
-**URL:** https://example.com
-**Total Issues:** 12
-
-## Critical (2 issues)
-
-### Issue #1: color-contrast - Insufficient contrast ratio
-[formatted issue content]
-
-### Issue #2: button-name - Button missing accessible name
-[formatted issue content]
-
-## Serious (5 issues)
-...
-```
-
-## Integration with Other Skills
-
-This skill is called by `a11y-tester` after running axe-core tests. It can also be invoked directly with violations from any source.
-
-**From a11y-tester:**
-```
-1. a11y-tester runs axe-core → collects violations
-2. a11y-tester delegates to a11y-issue-writer → formats issues
-3. Output: Summary + formatted issues
-```
-
-**Standalone usage:**
-```
-User provides violations → a11y-issue-writer formats → Output issues
-```
+## Integration
+- Commonly called by `a11y-tester` after an axe scan.
+- Can also be used standalone with manual reports (use `get_issue_template`).

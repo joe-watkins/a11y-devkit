@@ -1,216 +1,142 @@
 ---
 name: a11y-validator
-description: Verify that accessibility fixes resolve identified issues by re-running tests and checking against acceptance criteria. Use this skill after fixes have been generated to confirm they work correctly. Uses a11y-tester for runtime re-testing and magentaa11y-mcp for acceptance criteria verification. Part of the a11y-orchestrator workflow.
+description: Verify that accessibility fixes resolve identified issues by re-running tests and checking against acceptance criteria. Uses a11y-tester for runtime re-testing and magentaa11y-mcp for acceptance criteria verification.
 ---
 
 # Accessibility Validator
 
-Confirms that generated fixes resolve accessibility issues.
+## Core validation principles
+Validation must answer:
+1) **Did the original failure disappear?** (same rule id + same element/state)
+2) **Did we meet acceptance criteria?** (behavior + semantics)
+3) **Did we avoid regressions?** (global invariants still hold)
 
-## Validation Workflow
+### Evidence (required)
+For each issue, record:
+- rule id + selector/locator + before/after result
+- manual steps performed (keyboard/SR) + observations
+- screenshots/notes when visual checks apply (focus indicator, contrast)
 
-1. **Apply fixes** to the code
-2. **Re-run tests** to check if issues are resolved
-3. **Check acceptance criteria** — query `magentaa11y-mcp`:
-   - `get_web_component("button")` → Returns acceptance criteria
-   - `get_component_gherkin("button")` → Returns Gherkin test syntax
-4. **Categorize results** as fixed, needs-manual, or still-failing
+## Validation workflow
+1. Establish baseline (original violations + state).
+2. Re-run tests (runtime and/or static) after changes.
+3. Check component acceptance criteria via `magentaa11y-mcp`.
+4. Categorize: fixed / needs manual / still failing.
 
-## Re-Testing Process
+## Validation invariants (do not change between baseline and re-test)
+- Same route + same component state (expanded/collapsed, dialog open, errors shown) + same data.
+- Same viewport/breakpoint and input modality (keyboard-only where relevant).
+- Same scan scope (don’t narrow to hide the issue).
+- No “fix by suppression” (disabling rules, excluding selectors) unless explicitly requested.
+- Keep baseline evidence so you can prove it’s the same element.
 
-### For Runtime Issues (from a11y-tester)
+## Global invariants (must remain true after any fix)
+### Semantics / ARIA
+- Prefer native elements over role patches.
+- No redundant/conflicting ARIA.
+- ARIA only when needed; name/role/value computable.
+- `aria-*` references point to existing, unique IDs.
 
-Re-run the `a11y-tester` skill on the modified code:
+### Keyboard & focus
+- All controls reachable with Tab; no traps.
+- Focus order matches reading/task flow.
+- Focus indicator is clearly visible.
+- Focus is managed after dynamic actions (dialogs, errors).
 
-1. Serve or load the updated HTML
-2. Execute axe-core scan
-3. Compare violations to original list
-4. Mark resolved issues as fixed
+### Name / label
+- Accessible name is meaningful.
+- Visible label and accessible name do not conflict.
+- Icon-only controls have an accessible name.
 
-**Issue is fixed when:**
-- axe-core no longer reports the violation
-- The specific element/selector passes
+## Common anti-patterns to reject (even if tools go green)
+- Fixing missing name with `aria-label="button"` or other non-descriptive text.
+- `tabindex="0"` on div-buttons without full keyboard semantics.
+- `aria-hidden="true"` added to silence audits.
+- Global focus outline removal.
+- State changes not reflected in ARIA (`aria-expanded`, `aria-pressed`, etc.).
 
-### For Static Issues (from web-standards)
+## Re-testing process
 
-Re-apply the `web-standards` skill analysis:
+### Runtime issues (from a11y-tester)
+Re-run `a11y-tester`.
 
-1. Parse the updated code
-2. Run the same checks that found the issue
-3. Verify the problematic pattern is resolved
+**Fixed when (runtime):**
+- axe no longer reports the **same rule id** for the **same element** under the same user state
+- element wasn’t hidden/removed just to evade detection
+- no new equal-or-higher severity violation appears on that element
 
-**Issue is fixed when:**
-- The anti-pattern is no longer present
-- Proper semantic/ARIA structure exists
+### Static issues (from web-standards)
+Re-run `web-standards`.
 
-## Acceptance Criteria Verification
+**Fixed when (static):**
+- anti-pattern removed without introducing an equivalent alternative anti-pattern
+- resulting markup is semantically correct (native-first; ARIA only when needed)
+- if interaction is implicated, also perform runtime validation
 
-**Query magentaa11y-mcp** for component acceptance criteria:
-- `get_web_component("button")` → Returns full acceptance criteria
-- `get_component_gherkin("button")` → Returns Gherkin test syntax
-- `get_component_developer_notes("button")` → Returns implementation notes
+## Acceptance criteria verification
+Query magentaa11y-mcp:
+- `get_web_component("button")`
+- `get_component_condensed(platform=web, component=...)`
+- `get_component_gherkin(platform=web, component=...)`
 
-For each fix, verify it meets the documented acceptance criteria:
+### Turning criteria into checks
+Restate criteria as:
+- Invariant (always true)
+- Interaction (keyboard/SR behavior)
+- State mapping (UI state reflected in ARIA/state)
 
-### Example: Button Fix Validation
+Record each as Pass/Fail/Needs-manual.
 
-From magentaa11y-mcp button criteria, verify:
-- [ ] Has accessible name (visible text or aria-label)
-- [ ] Role is "button" (native or ARIA)
-- [ ] Keyboard operable (Enter/Space activates)
-- [ ] Focus visible when focused
-- [ ] State communicated if applicable (pressed, expanded)
+## Manual test protocol (fast, consistent)
+Use whenever interaction/focus/dialogs/errors/custom widgets are involved.
 
-### Example: Form Input Fix Validation
+### Keyboard-only smoke
+- Tab/Shift+Tab: reach all controls; no traps
+- Enter/Space works where expected; Esc closes dismissibles
+- Focus lands sensibly after open/close and after validation errors
+- Focus indicator clearly visible
 
-From magentaa11y-mcp text-input criteria, verify:
-- [ ] Label programmatically associated
-- [ ] Required state communicated
-- [ ] Error messages associated via aria-describedby
-- [ ] Input purpose identifiable
+### Screen reader sanity (minimum)
+- Role + name (+ state) announced correctly
+- Form errors/helper text announced when focusing the field
 
-### Example: Link Fix Validation
-
-From magentaa11y-mcp link criteria, verify:
-- [ ] Has accessible name
-- [ ] Role is "link"
-- [ ] Keyboard operable (Enter activates)
-- [ ] Purpose clear from link text or context
-
-## Result Categories
+## Result categories (templates)
 
 ### ✅ Fixed
-
-Issue confirmed resolved:
-- Automated test passes
-- Acceptance criteria met
-- No regression introduced
-
 ```markdown
 ### Issue #N: [Description]
 **Status:** ✅ Fixed
-**Verification:** axe-core passes / static check passes
-**Criteria Met:** [List from magentaa11y-mcp]
+**Repro/State:** [Route + component state]
+**Verification:** [axe rule id no longer present + locator evidence] / [static check passes]
+**Criteria Met:** [Acceptance criteria checked]
 ```
 
-### ⚠️ Needs Manual Review
-
-Cannot automatically verify:
-- Visual verification required (contrast, focus style)
-- Content quality check needed (alt text appropriateness)
-- Complex interaction testing required
-- User judgment needed
-
+### ⚠️ Needs manual review
 ```markdown
 ### Issue #N: [Description]
 **Status:** ⚠️ Needs Manual Review
-**Reason:** [Why automated verification isn't possible]
-**Manual Check:** [What human should verify]
-**Guidance:** Query magentaa11y-mcp for component pattern
+**Repro/State:** [Route + component state]
+**Reason:** [Why automated verification isn’t possible]
+**Manual check:** [What to verify]
 ```
 
-### ❌ Still Failing
-
-Fix did not resolve the issue:
-- Automated test still fails
-- Pattern still detected
-- Different approach needed
-
+### ❌ Still failing
 ```markdown
 ### Issue #N: [Description]
 **Status:** ❌ Still Failing
-**Reason:** [Why fix didn't work]
-**Suggestion:** [Alternative approach to try]
+**Repro/State:** [Route + component state]
+**Reason:** [Why fix didn’t work]
+**Next step:** [Alternative approach]
 ```
 
-## Validation Checklist by Issue Type
+## Regression checks
+- Re-run a broader scan on affected views.
+- Flag any new serious violations (name/role/value, keyboard, focus mgmt, form labeling).
+- Any new minor violations must be justified and ticketed.
 
-### Accessible Name Issues
-- [ ] Element now has accessible name
-- [ ] Name is meaningful and descriptive
-- [ ] Name matches visible label (if applicable)
-
-### Semantic Structure Issues
-- [ ] Correct HTML element used
-- [ ] No redundant ARIA
-- [ ] Proper nesting maintained
-
-### Keyboard Issues
-- [ ] Element is focusable
-- [ ] Expected keys work (Enter, Space, Escape, Arrows)
-- [ ] Focus order logical
-- [ ] Focus visible
-
-### Form Issues
-- [ ] All inputs labeled
-- [ ] Errors associated with inputs
-- [ ] Required fields indicated
-- [ ] Instructions associated
-
-### Landmark Issues
-- [ ] Required landmarks present
-- [ ] No duplicate main landmarks
-- [ ] Landmarks properly labeled if multiple
-
-### Image Issues
-- [ ] Alt attribute present
-- [ ] Alt content appropriate (descriptive or empty)
-- [ ] Decorative images marked correctly
-
-## Output Format
-
-```markdown
-## Validation Results
-
-**Total Issues:** X
-**Fixed:** Y
-**Needs Manual Review:** Z
-**Still Failing:** W
-
-### Fixed Issues
-
-| Issue | Description | Verification Method |
-|-------|-------------|---------------------|
-| #1 | Missing button name | axe-core: button-name passes |
-| #2 | Skipped heading | Static: h1→h2→h3 present |
-
-### Needs Manual Review
-
-| Issue | Description | Manual Check Required |
-|-------|-------------|-----------------------|
-| #3 | Image alt text | Verify alt describes image content |
-| #4 | Focus visibility | Verify focus ring meets 3:1 contrast |
-
-### Still Failing
-
-| Issue | Description | Reason | Next Step |
-|-------|-------------|--------|-----------|
-| #5 | Complex table | Headers not properly associated | Review table structure |
-```
-
-## Regression Checks
-
-After validation, verify no new issues introduced:
-
-1. Run full axe-core scan on modified code
-2. Compare total violation count
-3. Flag any new issues not in original list
-
-```markdown
-## Regression Check
-
-**New Issues Found:** X
-
-| New Issue | Description | Introduced By |
-|-----------|-------------|---------------|
-| ... | ... | Fix for Issue #N |
-```
-
-## Quick Reference
-
-| Validation Type | Tool/Resource | Pass Criteria |
-|-----------------|---------------|---------------|
-| axe violations | a11y-tester skill | Violation no longer reported |
-| Static patterns | web-standards skill | Anti-pattern removed |
-| Acceptance criteria | magentaa11y-mcp | All criteria checked |
-| Visual checks | Manual | Human verification |
+## Common failure modes (do not mark as fixed)
+- Rule suppression / excluded selectors.
+- Fix-by-hiding/removal without replacement.
+- Partial fix that breaks another criterion (e.g., tabindex without key handling).
+- Accessible name mismatch (visible text vs aria-label).
+- Static-only validation for interactive bugs.
