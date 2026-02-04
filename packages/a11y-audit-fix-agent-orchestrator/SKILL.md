@@ -79,9 +79,10 @@ This gives you a preliminary list of potential issues and builds context for wha
 **Next, run axe-core via Playwright** to validate against the actual rendered page. Read and apply the `a11y-tester` skill:
 
 1. Start a local server if testing a local file (`python3 -m http.server`)
-2. Navigate to the page using `mcp_microsoft_pla_browser_navigate`
-3. Inject and run axe-core using `mcp_microsoft_pla_browser_evaluate`
-4. Collect the `violations` and `incomplete` arrays from results
+2. Run the `a11y-tester` skill against the target URL (or local server URL)
+3. Collect the `violations` and `incomplete` arrays from results
+
+Do not call low-level browser tools directly from the orchestrator unless `a11y-tester` is unavailable.
 
 **Note:** The a11y-tester skill returns raw violations when called by the orchestrator. Issue formatting is handled separately by the a11y-issue-writer skill if needed.
 

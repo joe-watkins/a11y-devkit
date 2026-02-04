@@ -76,6 +76,7 @@ Copilot output must be neutral, helpful, and respectful. Avoid patronizing langu
 #### Good Code example
 ```html
 <button>Click me</button>
+```
 - Avoid overuse of sectioning elements and ARIA landmarks
 - Don't add any ARIA attributes unless asked to, rely on web standards first
 - Using generic containers when semantic elements would be more appropriate
@@ -111,15 +112,15 @@ When presenting collections of similar items (like articles, cards, products):
 #### Keyboard Navigation and Interaction
 - All interactive elements must support full keyboard navigation using standard keys:
 - Tab, Shift+Tab, Enter, Escape, Arrow keys
-- Do not author custom focus styles - rely on native default browser focus rings 
+- Do not remove focus styles. Prefer the native focus ring; if customizing, ensure the indicator remains clearly visible (including at 400% zoom) and has sufficient contrast.
 
 #### Touch Targets
-All interactive elements must meet a minimum touch target size of **24x24px** (or equivalent in `dp` or `pt`) to comply with WCAG 2.1. Larger sizing (such as 44x44px) is recommended for usability across Web, iOS, and Android but not a hard requirement.
+All interactive elements should meet a minimum touch target size of **24×24 CSS px** to align with WCAG 2.2 (SC 2.5.8 Target Size (Minimum), AA). Larger sizing (such as 44×44) is recommended for usability across Web, iOS, and Android.
 
 Touch Target Requirements:
-1. Required Minimum: 24x24px (WCAG 2.1 compliance)
-2. Preferred Size: 44x44px (optimal usability)
-3. Exception: When UI constraints make larger targets impossible, never go below 24x24px
+1. Minimum: 24×24 CSS px (WCAG 2.2 AA)
+2. Preferred: 44×44 (common platform/usability guidance; WCAG AAA technique context)
+3. Exception: When UI constraints make larger targets impossible, never go below 24×24
 
 #### Text Resize:
 All content must support up to 200% text resizing:
@@ -223,12 +224,12 @@ Using system colors ensures compatibility with Windows High Contrast Mode (Force
 For card components that do not have multiple CTAs in them or that have large touch targets, instead of wrapping the entire card, consider nesting a link inside a heading if the card has one. Create a large click area using pseudo selectors from that link inside the heading. 
 
 ##### Good example
-`
+```html
 <div class="card">
     <h2><a href="#">Some cool heading</a></h2>
     <!-- rest of card contents -->
 </div>
-`
+```
 ---
 
 ### Copilot Response Requirements
